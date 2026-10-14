@@ -1,0 +1,52 @@
+\usepackage{fontspec}
+\usepackage[vietnamese]{babel}
+\setmainfont{Noto Serif}
+\setsansfont{Noto Sans}
+\setmonofont{DejaVu Sans Mono}[Scale=0.84]
+\usepackage{geometry}
+\geometry{left=25mm,right=22mm,top=24mm,bottom=23mm,headheight=14pt}
+\usepackage{microtype}
+\usepackage{setspace}
+\setstretch{1.17}
+\emergencystretch=1em
+\usepackage{amsmath,amssymb,siunitx}
+\sisetup{detect-all}
+\usepackage{booktabs,tabularx,longtable,array,multirow}
+\renewcommand{\arraystretch}{1.21}
+\usepackage{enumitem}
+\setlist[itemize]{leftmargin=*,itemsep=3pt,topsep=4pt}
+\setlist[enumerate]{leftmargin=*,itemsep=3pt,topsep=4pt}
+\usepackage{xcolor}
+\definecolor{blueiot}{HTML}{193967}
+\definecolor{tealiot}{HTML}{008A94}
+\definecolor{orangeiot}{HTML}{E78B36}
+\definecolor{paleblue}{HTML}{EEF4FA}
+\definecolor{paleteal}{HTML}{EAF7F5}
+\usepackage[most]{tcolorbox}
+\newtcolorbox{notebox}{breakable,colback=paleblue,colframe=blueiot!65,arc=1mm,boxrule=.65pt,left=3mm,right=3mm,top=2mm,bottom=2mm}
+\newtcolorbox{tipbox}{breakable,colback=paleteal,colframe=tealiot!70,arc=1mm,boxrule=.65pt,left=3mm,right=3mm,top=2mm,bottom=2mm}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,fit,backgrounds,patterns,shadows.blur}
+\tikzset{block/.style={draw=blueiot!70,fill=paleblue,rounded corners=2mm,minimum height=12mm,minimum width=34mm,align=center,inner sep=3mm},cloudnode/.style={draw=tealiot,fill=paleteal,rounded corners=5mm,align=center,minimum width=35mm,minimum height=11mm},arrow/.style={-{Latex[length=3mm]},thick,blueiot}}
+\usepackage{graphicx,caption,subcaption}
+\captionsetup{labelfont={bf,color=blueiot},font=small,skip=5pt}
+\usepackage{listings}
+\lstset{basicstyle=\ttfamily\footnotesize,breaklines=true,frame=single,framerule=.3pt,rulecolor=\color{blueiot!40},backgroundcolor=\color{paleblue},numbers=left,numberstyle=\tiny\color{blueiot!65},numbersep=7pt,tabsize=2,showstringspaces=false,keepspaces=true,xleftmargin=4mm,framexleftmargin=4mm,aboveskip=9pt,belowskip=8pt}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\sffamily\color{blueiot} TỔNG HỢP KIẾN THỨC PHẦN CỨNG IoT}
+\fancyhead[R]{\small\sffamily\color{blueiot}\nouppercase{\leftmark}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{.4pt}
+\usepackage[unicode,pdfencoding=auto,bookmarksnumbered=true,colorlinks=true,linkcolor=blueiot,urlcolor=tealiot]{hyperref}
+\usepackage{titlesec}
+\titleformat{\chapter}[display]{\sffamily\bfseries\color{blueiot}}{\Large CHƯƠNG \thechapter}{.6em}{\Huge}
+\titleformat{\section}{\Large\sffamily\bfseries\color{blueiot}}{\thesection}{.7em}{}
+\titleformat{\subsection}{\large\sffamily\bfseries\color{tealiot}}{\thesubsection}{.7em}{}
+\setcounter{tocdepth}{2}
+\setcounter{secnumdepth}{3}
+\newcommand{\sourcepages}[1]{\par\noindent{\footnotesize\color{tealiot}\textit{Liên hệ slide nguồn: #1.}}\par}
+\newcommand{\term}[2]{\textbf{#1} (\textit{#2})}
+
+\newcommand{\hwterm}[2]{\textbf{#1} (\textit{#2})}
