@@ -1,0 +1,138 @@
+% Mục nội dung thuộc chương 1 của bài giảng gốc; không phải chương độc lập.
+\begin{notebox}
+\textbf{Mục tiêu:} (i) trình bày khái niệm Internet of Things (IoT); (ii) giải thích vì sao IoT xuất hiện; (iii) phân biệt smart object, smart environment, ubiquitous computing, M2M, IIoT và Industry 4.0; (iv) mô tả chu trình cảm nhận--xử lý--kết nối--tác động.
+\end{notebox}
+\section{Tổng quan về học phần và phạm vi IoT}
+Học phần \textit{Cơ sở và thiết kế hệ thống IoT} (mã EEE703006) giới thiệu nền tảng phần cứng/phần mềm, các giao thức truyền thông và cơ chế xử lý dữ liệu. Bài giảng dẫn các ví dụ Zigbee, Bluetooth cùng các họ chuẩn IEEE 802.15.4, IEEE 802.15.6 và WLAN. Phần lịch học theo khóa 2022 trong bài giảng là thông tin hành chính, không phải nội dung kiến thức cần học thuộc.
+\lecturesrc{2--4}
+
+\subsection{IoT là gì?}
+\term{Internet of Things (IoT)} là hệ thống gồm những đối tượng vật lý hoặc thiết bị có khả năng nhận dạng, thu thập thông tin, trao đổi dữ liệu qua mạng và, tùy ứng dụng, tự động thực hiện hành động dựa trên dữ liệu. Trong bài giảng, đối tượng có thể là thiết bị, máy móc, động vật được gắn thẻ, phương tiện hoặc con người gắn thiết bị theo dõi. Các đối tượng không nhất thiết cần thao tác nhập liệu trực tiếp từ con người trong từng lần trao đổi.
+
+Cần phân biệt ba cấp độ:
+\begin{enumerate}
+\item \textbf{Thiết bị điện tử tự động:} cảm biến và bộ điều khiển hoạt động cục bộ, không có trao đổi thông tin qua mạng; chưa đủ để khẳng định là một hệ thống IoT.
+\item \textbf{Thiết bị được kết nối:} có khả năng gửi/nhận dữ liệu bằng một kênh truyền, kể cả qua thiết bị trung gian (gateway).
+\item \textbf{Hệ thống IoT:} liên kết thiết bị và dữ liệu với dịch vụ, quản lý, ứng dụng và quy trình phản hồi tạo ra giá trị sử dụng.
+\end{enumerate}
+
+Ví dụ: cảm biến nhiệt độ điều khiển quạt tại chỗ là hệ thống nhúng tự động; nếu bổ sung khả năng gửi số đo tới máy chủ, theo dõi từ xa và cấu hình ngưỡng qua ứng dụng, ta đã có chức năng đặc trưng của IoT. \textbf{Không phải mọi ``thing'' phải sở hữu địa chỉ IP công khai}: nhiều nút chỉ liên lạc cục bộ, gateway chịu trách nhiệm kết nối Internet. Đây là cách hiểu kỹ thuật chính xác hơn so với diễn đạt rút gọn ``mọi thiết bị có nút ON/OFF đều có thể kết nối Internet'' trong slide.
+\lecturesrc{5, 12--14}
+
+\begin{figure}[H]\centering
+\begin{tikzpicture}[node distance=7mm and 8mm, every node/.style={font=\small}]
+\node[block,minimum width=28mm] (world) {Đối tượng\\vật lý};
+\node[block,right=of world,minimum width=30mm] (sensing) {Cảm biến\\\& nhận dạng};
+\node[block,right=of sensing,minimum width=27mm] (compute) {Xử lý\\nhúng};
+\node[block,right=of compute,minimum width=28mm] (net) {Kết nối\\mạng};
+\node[block,below=13mm of net,minimum width=28mm] (app) {Dịch vụ\\\& ứng dụng};
+\node[subblock,left=of app,minimum width=27mm] (act) {Cơ cấu\\chấp hành};
+\draw[arrow] (world)--(sensing);\draw[arrow](sensing)--(compute);\draw[arrow](compute)--(net);\draw[arrow](net)--(app);\draw[arrow](app)--(act);\draw[arrow](act.west)-|([xshift=-3mm]world.south) --(world.south);
+\end{tikzpicture}
+\caption{Chu trình điển hình của IoT; đường phản hồi tới môi trường là tùy chọn. Sơ đồ tự biên soạn.}
+\end{figure}
+
+\section{Lịch sử hình thành Internet và IoT}
+\subsection{Bốn giai đoạn phát triển Internet theo bài giảng}
+Bài giảng dùng một cách phân kỳ theo \textbf{mức độ tác động và mục đích sử dụng}, không phải các giai đoạn có ranh giới thời gian tuyệt đối. Đây là tiến trình từ số hóa khả năng truy cập thông tin tới số hóa thế giới vật lý.
+\begin{longtable}{p{.245\textwidth}p{.28\textwidth}p{.38\textwidth}}
+\toprule\textbf{Giai đoạn}&\textbf{Trọng tâm}&\textbf{Ví dụ và hệ quả}\\\midrule
+Connectivity -- Digitize access&Kết nối con người tới thông tin&Email, trình duyệt web, tìm kiếm; việc truy cập tài nguyên số trở nên dễ dàng.\\
+Networked economy -- Digitize business&Số hóa hoạt động kinh doanh&Thương mại điện tử, chuỗi cung ứng, phối hợp nghiệp vụ, tối ưu hiệu suất.\\
+Immersive experiences -- Digitize interactions&Số hóa tương tác, trải nghiệm&Di động, mạng xã hội, video, đám mây; truy cập dịch vụ liên tục.\\
+Internet of Things -- Digitize the world&Kết nối đối tượng vật lý&Dữ liệu từ cảm biến và máy móc trở thành nguồn dịch vụ; liên thông giữa hệ vật lý và thế giới số.\\\bottomrule
+\end{longtable}
+\lecturesrc{6--8}
+
+\begin{figure}[H]\centering
+\begin{tikzpicture}[x=2.9cm,y=1cm, every node/.style={font=\footnotesize,align=center}]
+\foreach \x/\a/\b/\c in {0/Truy cập/Email--Web/Truy cập thông tin,1/Kinh tế số/E-commerce/Quy trình kinh doanh,2/Trải nghiệm/Mobile--Cloud/Tương tác mọi nơi,3/IoT/Things--Data/Số hóa thế giới}{
+ \node[block,minimum width=2.55cm,minimum height=2cm,fill=navy!8] at (\x,0) {\textbf{\a}\\[2mm]\b\\[2mm]{\scriptsize \c}};
+}
+\draw[arrow] (-.8,-1.4)--(3.8,-1.4) node[midway,below]{Gia tăng mức độ kết nối thông minh};
+\end{tikzpicture}\caption{Bốn giai đoạn nhìn theo mục tiêu ứng dụng Internet.}
+\end{figure}
+
+\subsection{Các mốc đáng ghi nhớ}
+\begin{itemize}
+\item \textbf{Thập niên 1970--1980:} các đối tượng đặc thù như máy ATM và máy bán hàng có kết nối là tiền thân của tư duy thiết bị được mạng hóa. Bài giảng nêu ATM từ 1974 và máy bán hàng kết nối tại Carnegie Mellon vào thập niên 1980.
+\item \textbf{1999:} Kevin Ashton được ghi nhận đã sử dụng thuật ngữ \textit{Internet of Things} trong bối cảnh quản lý chuỗi cung ứng tại Procter \& Gamble, gắn với RFID để nhận diện và theo dõi sản phẩm.
+\item \textbf{1999:} Neil Gershenfeld xuất bản \textit{When Things Start to Think}; bài giảng dùng tác phẩm này để minh họa tầm nhìn về các vật thể có năng lực tính toán.
+\item \textbf{2008--2009:} được slide coi là thời điểm IoT bắt đầu được nhìn nhận như một kỷ nguyên mới; đây là nhận định về độ phổ biến của khái niệm, \emph{không phải} ngày phát minh của IoT.
+\item \textbf{Khoảng từ 2010:} Industrial Internet of Things (IIoT) được thảo luận rộng hơn trong ứng dụng công nghiệp.
+\end{itemize}
+\lecturesrc{9--11}
+
+\begin{notebox}
+\textbf{Câu hỏi hay gặp:} Kevin Ashton không ``phát minh ra Internet'' năm 1999. Ông thường được ghi nhận là người đặt tên \textit{Internet of Things}. Sự phát triển IoT dựa trên nhiều công nghệ đã có trước đó như cảm biến, RFID, mạng máy tính, vi điều khiển và truyền thông không dây.
+\end{notebox}
+
+\section{Đối tượng thông minh và môi trường thông minh}
+\subsection{Smart Object (SO) -- đối tượng thông minh}
+Một \term{smart object} là vật thể có tích hợp một số thành phần: bộ xử lý; bộ nhớ hoặc phương tiện lưu dữ liệu; cảm biến; giao tiếp mạng; nguồn cấp điện. Tùy chức năng, nó còn có \term{actuator} để tác động lên môi trường. Thiết bị có thể nhận dữ liệu, xử lý theo logic đã lập trình, truyền thông và thay đổi trạng thái vật lý. Ví dụ: đồng hồ đo điện thông minh, máy cảnh báo khói, cảm biến chất lượng không khí, công tắc chiếu sáng kết nối.
+
+\begin{figure}[H]\centering
+\begin{tikzpicture}[every node/.style={font=\small}]
+\node[block,minimum width=35mm,minimum height=20mm,fill=navy!13] (core) at (0,0) {ĐỐI TƯỢNG\\THÔNG MINH};
+\node[subblock] (sensor) at (-4,2) {Cảm biến\\Sensor};
+\node[subblock] (mem) at (0,2.1) {Bộ xử lý\\và bộ nhớ};
+\node[subblock] (link) at (4,2) {Truyền thông\\RF/Wi-Fi/BLE};
+\node[subblock] (energy) at (-3.8,-2) {Nguồn năng lượng};
+\node[subblock] (act) at (3.8,-2) {Cơ cấu chấp hành\\(nếu có)};
+\foreach \a in {sensor,mem,link,energy,act}{\draw[arrow] (\a)--(core);}
+\end{tikzpicture}\caption{Các khối của một smart object (kiến trúc chức năng).}
+\end{figure}
+
+\subsection{Chức năng cốt lõi và xu hướng phát triển}
+Bài giảng đề cập khả năng thu nhận dữ liệu, xử lý theo thời gian thực, giao tiếp và cấu hình lại. Các xu hướng chính gồm kích thước nhỏ hơn, giảm điện năng tiêu thụ, khả năng tính toán và kết nối tốt hơn, giao thức được chuẩn hóa hơn. Đây là \textit{xu thế thiết kế chung}; không phải tất cả các thiết bị đời mới luôn tiết kiệm năng lượng hơn trong mọi điều kiện hoạt động.
+\lecturesrc{15--17}
+
+\subsection{Smart Environment (SE) -- môi trường thông minh}
+\term{Môi trường thông minh} là không gian vật lý có nhiều đối tượng thông minh được bố trí, kết nối và tương tác với con người hoặc với nhau: nhà thông minh, tòa nhà, bệnh viện, nhà máy, đô thị. Một cảm biến độc lập chưa tạo thành SE; ý nghĩa đến từ khả năng phối hợp thiết bị, xử lý ngữ cảnh và cung cấp dịch vụ hữu ích. Bài giảng liên hệ SE với quan niệm tính toán có mặt khắp nơi của Mark Weiser.
+\lecturesrc{18--19}
+
+\begin{expandbox}
+\term{Ubiquitous computing (Ubicomp)} -- tính toán khắp nơi: tài nguyên tính toán được tích hợp vào đồ vật và bối cảnh thường ngày, giúp tương tác ít gây chú ý. \term{IoT} nhấn mạnh thêm \textit{kết nối và trao đổi thông tin}. Một thiết bị cảm biến đèn tự bật sáng cục bộ có thể thuộc khái niệm hệ thống nhúng/Ubicomp nhưng chưa chắc là IoT; khi nối với nền tảng giám sát/quản lý từ xa, ta thấy rõ tính IoT. Cách so sánh này phù hợp tư duy của McEwen--Cassimally (2014, Chương 1).
+\end{expandbox}
+
+\section{Những khái niệm liên quan: M2M, IIoT, Industry 4.0}
+\subsection{Machine-to-Machine (M2M)}
+\term{M2M} là truyền thông giữa các máy/thiết bị mà không cần con người can thiệp trực tiếp vào từng trao đổi. Ví dụ máy đo điện gửi chỉ số về bộ tập trung; bộ điều khiển công nghiệp gửi trạng thái cho máy giám sát. M2M và IoT có vùng giao nhau: M2M tập trung vào các kênh máy--máy phục vụ tác vụ; IoT thường đặt chúng vào hệ thống dịch vụ, dữ liệu, quản lý thiết bị và ứng dụng quy mô rộng hơn. \textbf{Không đồng nhất M2M với Internet}: M2M có thể chạy trên mạng riêng hoặc liên kết trực tiếp.
+\subsection{Industrial Internet of Things (IIoT)}
+\term{IIoT} là việc vận dụng IoT trong hoạt động công nghiệp, nơi dữ liệu được dùng để theo dõi máy móc, chất lượng quy trình, tình trạng thiết bị, an toàn và bảo trì. IIoT thường chú trọng độ tin cậy, thời gian phản hồi, tính sẵn sàng và tích hợp hệ thống điều khiển hiện có.
+\subsection{Industry 4.0 -- công nghiệp 4.0}
+\term{Industry 4.0} là định hướng chuyển đổi sản xuất với sự kết hợp của hệ thống cyber--physical, kết nối dữ liệu, tự động hóa và phân tích. \textbf{IIoT là một nhóm công nghệ nền tảng quan trọng, nhưng không bao trùm toàn bộ Industry 4.0}. Ví dụ AI kiểm soát chất lượng, robot cộng tác, mô hình song sinh số và hệ hoạch định sản xuất có thể đi cùng IIoT.
+\lecturesrc{20--22}
+
+\begin{table}[H]\centering\small
+\caption{So sánh các khái niệm dễ nhầm lẫn}
+\begin{tabularx}{\textwidth}{p{2.45cm}XXX}\toprule
+Khái niệm&Trọng tâm&Điều kiện đặc trưng&Ví dụ\\\midrule
+Smart Object&Từng đối tượng&Cảm nhận, xử lý, kết nối hoặc tác động&Đồng hồ điện thông minh\\
+Smart Environment&Toàn không gian&Nhiều thiết bị và dịch vụ phối hợp&Tòa nhà thông minh\\
+Ubicomp&Tính toán ở mọi nơi&Tính toán ẩn trong đồ vật&Đèn tự bật theo chuyển động\\
+M2M&Giao tiếp máy--máy&Trao đổi dữ liệu tự động&Bộ đo đến bộ điều khiển\\
+IIoT&IoT trong công nghiệp&Đo lường, giám sát, cải thiện vận hành&Giám sát máy nén khí\\
+Industry 4.0&Chuyển đổi sản xuất&Tích hợp tự động hóa, dữ liệu, tổ chức&Sản xuất thông minh\\\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Tư duy hệ thống: từ dữ liệu tới hành động}
+Trong một quy trình IoT hoàn chỉnh, đầu vào là các đại lượng vật lý: nhiệt độ, áp suất, rung, ánh sáng, vị trí, trạng thái công tắc. \term{Cảm biến} biến đổi đại lượng cần quan sát thành tín hiệu; bộ xử lý đưa dữ liệu về dạng có thể dùng (số hóa, lọc, hiệu chuẩn); lớp kết nối chuyển dữ liệu; nền tảng phân tích áp dụng quy tắc; ứng dụng hiển thị thông tin hoặc phát lệnh; cơ cấu chấp hành thực hiện hành động. Kỹ sư cần xác định rõ \emph{lấy số đo gì}, \emph{để giải quyết quyết định nào}, \emph{cho ai}, \emph{trong điều kiện vận hành nào}.
+
+\begin{expandbox}
+\textbf{Ví dụ hoàn chỉnh: hệ tưới cây.} Cảm biến đo độ ẩm đất theo chu kỳ; MCU lọc nhiễu và nhận biết vượt ngưỡng; Wi-Fi truyền dữ liệu lên server; dashboard lưu đồ thị; bộ điều khiển mở van tưới và tự đóng khi đạt ngưỡng. Cần thiết kế chế độ an toàn khi mất mạng (ví dụ không tưới liên tục) và cơ chế xác định cảm biến bị lỗi. Đây là ví dụ mở rộng, không có sơ đồ đấu dây trong slide gốc.
+\end{expandbox}
+
+\section{Tổng kết và câu hỏi tự kiểm tra}
+\begin{notebox}
+\textbf{Nhớ 5 ý:} (1) IoT gắn dữ liệu với thế giới vật lý; (2) smart object là nền tảng thiết bị; (3) smart environment là hệ phối hợp; (4) M2M khác phạm vi IoT; (5) IoT là sự hội tụ của phần cứng nhúng, cảm biến, mạng, dịch vụ và dữ liệu.
+\end{notebox}
+\begin{enumerate}
+\item Phân biệt thiết bị nhúng tự động và hệ thống IoT bằng hai tình huống cụ thể.
+\item Vì sao thuật ngữ IoT gắn với Kevin Ashton và RFID năm 1999?
+\item Nêu bốn giai đoạn phát triển Internet theo slide và giải thích mục tiêu của mỗi giai đoạn.
+\item Mô tả năm khối chính của smart object. Thành phần nào không bắt buộc với mọi thiết bị?
+\item Nêu một ví dụ về smart environment và giải thích lợi ích của việc phối hợp nhiều thiết bị.
+\item So sánh M2M, IIoT, Industry 4.0; cho một trường hợp có cả ba.
+\end{enumerate}
