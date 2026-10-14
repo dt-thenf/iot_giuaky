@@ -1,0 +1,343 @@
+% !TeX program = lualatex
+% Tài liệu độc lập, biên dịch: lualatex on_tap_tu_luan_6_cau_5_diem.tex (2 lần)
+\documentclass[11pt,a4paper]{article}
+\usepackage[a4paper,left=23mm,right=21mm,top=23mm,bottom=23mm,headheight=15pt]{geometry}
+\usepackage{fontspec}
+\setmainfont{Noto Serif}
+\setsansfont{Noto Sans}
+\usepackage[vietnamese]{babel}
+\usepackage{amsmath,amssymb,booktabs,tabularx,longtable,array}
+\usepackage{enumitem}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric}
+\usepackage{fancyhdr,lastpage,hyperref,xcolor}
+\definecolor{navy}{HTML}{17375E}
+\definecolor{teal}{HTML}{087887}
+\definecolor{light}{HTML}{EEF5FA}
+\definecolor{cream}{HTML}{FFF8ED}
+\hypersetup{colorlinks=true,linkcolor=navy,urlcolor=teal,pdftitle={Sáu câu tự luận IoT - đáp án và barem tham khảo},pdfauthor={Biên soạn ôn tập dựa trên tài liệu học phần}}
+\newtcolorbox{questionbox}{breakable,colback=light,colframe=navy,boxrule=.7pt,arc=1mm,title={ĐỀ BÀI DỰ KIẾN},fonttitle=\bfseries}
+\newtcolorbox{warningbox}{breakable,colback=cream,colframe=orange!65!black,boxrule=.6pt,arc=1mm,title={Dễ mất điểm},fonttitle=\bfseries}
+\newtcolorbox{notesbox}[1][]{breakable,colback=white,colframe=teal!65,boxrule=.55pt,arc=1mm,#1}
+\newcommand{\pointpart}[2]{\subsection*{Mục #1 --- #2\hfill\normalsize\color{teal}[1,0 điểm]}}
+\newcommand{\src}[1]{\par\noindent\textcolor{teal}{\footnotesize\textit{Nguồn đối chiếu: #1.}}\par}
+\newcommand{\scoring}[1]{\par\noindent\textbf{Barem chi tiết (1,0 điểm):} #1\par}
+\newcommand{\kw}[1]{\textbf{#1}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\emergencystretch=5em
+\setlist[itemize]{leftmargin=1.7em,itemsep=2pt,topsep=2pt}
+\setlist[enumerate]{leftmargin=1.7em,itemsep=2pt,topsep=2pt}
+\pagestyle{fancy}\fancyhf{}\fancyhead[L]{\footnotesize\sffamily ÔN TỰ LUẬN IoT --- 6 CÂU}\fancyhead[R]{\footnotesize\sffamily 5 ĐIỂM/CÂU}\fancyfoot[C]{\footnotesize\thepage/\pageref{LastPage}}
+\renewcommand{\headrulewidth}{.3pt}
+\begin{document}
+\begin{titlepage}
+\centering\vspace*{24mm}
+{\color{teal}\sffamily\Large TÀI LIỆU ÔN TẬP TỰ LUẬN\par}\vspace{8mm}
+{\color{navy}\sffamily\bfseries\fontsize{26}{33}\selectfont CƠ SỞ VÀ THIẾT KẾ\\HỆ THỐNG IoT\par}\vspace{9mm}
+{\sffamily\LARGE 06 CÂU TRỌNG TÂM --- ĐÁP ÁN CHI TIẾT\par}\vspace{7mm}
+{\large Mỗi câu 5 điểm; 5 mục chấm, mỗi mục 1 điểm\par}\vspace{16mm}
+\begin{notesbox}
+\textbf{Nguyên tắc biên soạn:} đặt giả thiết rằng đề thi nêu rất ngắn nhưng yêu cầu giải thích có hệ thống: \emph{định nghĩa --- cấu trúc/thành phần --- cơ chế --- đặc điểm/so sánh --- ví dụ áp dụng}. Dưới mỗi câu có \textbf{năm phần trả lời đạt điểm}, kèm barem thành phần 0,25--0,5 điểm và lỗi dễ mất điểm. \textbf{Đây là barem DỰ KIẾN để tự ôn, không phải đáp án/barem chính thức do giảng viên cung cấp.}
+\end{notesbox}
+\vfill
+{\small Nguồn chính: slide \textit{Cơ sở và thiết kế hệ thống IoT} (Chapter 1, 2, 3, 4, 5, 6, 8), TS. Nguyễn Đắc Cử, Đại học Phenikaa.\par}
+{\small Đối chiếu bổ sung: Q. F. Hassan (2018); McEwen--Cassimally (2014); James--Seth--Mukhopadhyay (2022).\par}
+{\large\sffamily 2026\par}
+\end{titlepage}
+\tableofcontents\newpage
+
+\section*{Đọc trước khi học thuộc}\addcontentsline{toc}{section}{Đọc trước khi học thuộc}
+\textbf{Mốc kiến thức cần phân biệt:}
+\begin{enumerate}
+\item \kw{Kiến trúc hệ thống IoT bốn lớp} trong \emph{Chapter 1: An overview of IoT}, slide 33--35, là kiến trúc hướng dịch vụ: \kw{Perception -- Network -- Data Processing -- Application}. Đừng thay bằng TCP/IP.
+\item \kw{Mô hình truyền thông TCP/IP bốn lớp} là ngăn xếp giao thức \kw{Link/Network Access -- Internet -- Transport -- Application}. Đừng thay bằng kiến trúc IoT ở câu 2. Mô hình này được giải thích mở rộng từ sách \emph{Designing the Internet of Things}, chương 3; slide Chương 3 đề cập TCP/IP, UDP, MQTT, HTTP, CoAP nhưng \emph{không trình bày rõ một bảng bốn lớp TCP/IP hoàn chỉnh trong phần chữ được trích xuất}. Do đó nếu đề chính thức dùng từ ``mô hình truyền thông'' theo cách khác, cần đối chiếu đúng sơ đồ giảng viên đưa ra.
+\item \kw{Công nghệ kết nối} (BLE, Zigbee, Wi-Fi, LoRaWAN, NB-IoT, \ldots) khác \kw{giao thức trao đổi dữ liệu ứng dụng} (MQTT, HTTP, CoAP). Một hệ thống có thể dùng đồng thời cả hai loại, chẳng hạn \emph{LoRaWAN cho đường vô tuyến} và \emph{MQTT từ gateway lên máy chủ}.
+\item \kw{Tốc độ dữ liệu} là tốc độ danh định/đặc trưng của phiên bản công nghệ, không phải tốc độ hữu dụng luôn đạt được. Khoảng cách phụ thuộc băng tần, anten, địa hình, công suất và pháp lý. Bảng tốc độ ở câu 5 giữ nguyên các khoảng có trong slide và đánh dấu các số bổ sung bên ngoài slide.
+\end{enumerate}
+\begin{notesbox}[title={Chiến thuật làm một câu tự luận 5 điểm}]
+Ghi đúng \textbf{5 đề mục đánh số}, mỗi đề mục viết \textbf{đủ khái niệm --- vai trò/nguyên lý --- đặc tính quan trọng --- ví dụ nhỏ} nếu thích hợp. Với câu vẽ mô hình: ghi tên, vẽ bốn khối theo đúng thứ tự, mô tả đường đi dữ liệu đi lên và lệnh điều khiển đi xuống. Với câu so sánh giao thức: luôn có \textbf{tốc độ + phạm vi + điện năng + hạn chế + tính phù hợp với tình huống}; không chỉ liệt kê tên.
+\end{notesbox}
+
+\clearpage
+\section{Câu 1. Trình bày những kiến thức cơ bản về Internet of Things (IoT)}
+\begin{questionbox}
+``Trình bày cơ bản về IoT'' hoặc ``IoT là gì? Nêu đặc trưng, thành phần và ứng dụng của IoT.'' \textbf{Thang dự kiến 5,0 điểm.}
+\end{questionbox}
+\pointpart{1}{Định nghĩa và bản chất của IoT}
+\kw{Internet of Things (IoT) --- Internet vạn vật} là hệ thống những đối tượng, thiết bị vật lý được gắn khả năng \kw{nhận dạng, cảm nhận, xử lý và trao đổi dữ liệu} qua mạng để phối hợp thực hiện chức năng, có thể giảm nhu cầu con người thao tác trực tiếp. ``Thing'' không chỉ là máy tính hay điện thoại: có thể là đồng hồ điện, xe, máy công nghiệp, cảm biến gắn trên cây trồng hoặc đối tượng được gắn thẻ RFID. Đối tượng có thể giao tiếp trực tiếp hoặc thông qua \emph{gateway}; không phải mọi cảm biến đều cần địa chỉ IP công khai hay kết nối Internet riêng.
+
+Điểm khác biệt của IoT so với một thiết bị điện tử thông thường là \kw{khả năng thu nhận thông tin từ thế giới vật lý, kết nối chia sẻ thông tin và đưa dữ liệu vào quy trình giám sát/điều khiển}. IoT là sự hội tụ giữa hệ thống vật lý với công nghệ thông tin--truyền thông.
+\scoring{0,50: định nghĩa và vật thể kết nối; 0,25: dữ liệu/nhận dạng; 0,25: tự động hoá hoặc phối hợp qua mạng, phân biệt với thiết bị đơn lẻ.}
+\src{Chapter 1, slide 4 và 12--14 (trang PDF 5 và 13--15).}
+
+\pointpart{2}{Các thành phần cấu thành một hệ thống IoT}
+Một hệ thống thường có \kw{đối tượng thông minh/nút IoT} (cảm biến, cơ cấu chấp hành, bộ điều khiển), \kw{mạng và gateway} (truyền, chuyển tiếp, chuyển đổi giao thức), \kw{nền tảng xử lý/lưu trữ} (edge/fog/cloud, cơ sở dữ liệu, phân tích), \kw{dịch vụ và giao diện người dùng} (dashboard, ứng dụng điện thoại, cảnh báo). Kèm theo là nguồn điện, cơ chế định danh, kiểm soát truy cập và an ninh dữ liệu.
+
+\kw{Smart Object} là vật thể được nhúng xử lý/lưu trữ/cảm biến/kết nối, đôi khi có actuator để tác động môi trường. Nhiều smart object cùng tương tác trong nhà, nhà máy hay thành phố hình thành \kw{Smart Environment}. Slide tổng quan mô tả bốn \emph{thành phần} ``Things -- Gateway/Network -- Cloud -- Services''; đây là cách nhìn chức năng, \kw{không đồng nhất} với kiến trúc \emph{bốn lớp} SoA ở câu 2.
+\scoring{0,25: nút IoT; 0,25: mạng/gateway; 0,25: nền tảng lưu trữ/xử lý; 0,25: dịch vụ/người dùng và liên hệ smart object.}
+\src{Chapter 1, slide 14--17, 22--27 (trang PDF 15--18, 23--28).}
+
+\pointpart{3}{Nguyên lý hoạt động và dòng dữ liệu hai chiều}
+Quá trình điển hình: \kw{(1) cảm biến đo} nhiệt độ/độ ẩm/áp suất $\rightarrow$ \kw{(2) bộ điều khiển đọc, chuyển đổi và tiền xử lý} $\rightarrow$ \kw{(3) truyền qua mạng/gateway} $\rightarrow$ \kw{(4) lưu trữ, phân tích, phát hiện bất thường trên edge hoặc cloud} $\rightarrow$ \kw{(5) giao diện cảnh báo hoặc gửi lệnh điều khiển} về actuator. Dữ liệu cảm biến là \emph{uplink}; lệnh bật/tắt bơm, quạt, van từ ứng dụng về thiết bị là \emph{downlink}. Một số vòng điều khiển quan trọng phải hoạt động cục bộ ngay cả khi Internet gián đoạn.
+
+\begin{center}\begin{tikzpicture}[>=Latex,node distance=3mm,every node/.style={font=\small},b/.style={draw=navy,rounded corners,fill=light,minimum height=10mm,text width=28mm,align=center}]
+\node[b] (a) {Cảm biến / Nút IoT};\node[b,right=of a] (g) {Gateway / Mạng};\node[b,right=of g] (c) {Cloud / Xử lý};\node[b,right=of c] (u) {Ứng dụng / Người dùng};
+\draw[->,thick,teal] (a.north east) -- (g.north west);\draw[->,thick,teal] (g.north east) -- (c.north west);\draw[->,thick,teal] (c.north east) -- (u.north west);
+\draw[<-,thick,navy] (a.south east) -- (g.south west);\draw[<-,thick,navy] (g.south east) -- (c.south west);\draw[<-,thick,navy] (c.south east) -- (u.south west);
+\end{tikzpicture}\end{center}
+\scoring{0,25: thu thập; 0,25: xử lý/đóng gói; 0,25: truyền, lưu trữ và phân tích; 0,25: phản hồi/điều khiển và chiều ngược.}
+\src{Chapter 1, slide 23--27; Chapter 4, slide 2--6. Sơ đồ do người biên soạn dựng.}
+
+\pointpart{4}{Đặc trưng, lợi ích và thách thức cơ bản}
+\kw{Đặc trưng:} kết nối nhiều thiết bị không đồng nhất; thu thập dữ liệu liên tục hoặc định kỳ; tự động hoá/giám sát từ xa; có thể mở rộng; hỗ trợ nhận biết ngữ cảnh và phân tích để đưa ra quyết định. \kw{Lợi ích:} tiết kiệm nhân lực, tối ưu năng lượng, nâng độ chính xác giám sát, cảnh báo sớm, giảm thời gian dừng máy. \kw{Thách thức:} an toàn/bảo mật và quyền riêng tư, tương thích giao thức, vùng phủ và độ trễ, giới hạn CPU/RAM, nguồn pin, khả năng mở rộng và chất lượng dữ liệu. Không được viết rằng IoT \emph{luôn} truyền thời gian thực hoặc \emph{luôn} kết nối Internet ổn định.
+\scoring{0,25: ít nhất hai đặc trưng; 0,25: lợi ích cụ thể; 0,25: ít nhất hai thách thức; 0,25: nêu một đánh đổi thực tế.}
+\src{Chapter 1, mục IoT Concepts/Applications/Challenges; Chapter 6, slide 2--4; Hassan (2018), chương 1.}
+
+\pointpart{5}{Ví dụ hoàn chỉnh và liên hệ IoT--M2M--IIoT}
+\kw{Ví dụ hệ thống tưới thông minh:} đầu đo độ ẩm đất tạo dữ liệu; ESP32/MCU đọc và kiểm tra ngưỡng; Wi-Fi hoặc LoRaWAN chuyển thông số về gateway/nền tảng; dashboard cho người trồng giám sát; khi đất khô, bộ điều khiển tác động relay/driver đóng điện cho bơm hoặc van. Thiết bị vẫn nên có ngưỡng dừng an toàn cục bộ khi mất mạng. \kw{M2M} nhấn mạnh máy trao đổi tự động với máy; \kw{IoT} mở rộng sang nền tảng, dữ liệu, dịch vụ và nhiều hệ thống; \kw{IIoT} là IoT trong công nghiệp (giám sát dây chuyền, bảo trì dự đoán). \kw{Smart Home/Smart City} là ví dụ về môi trường thông minh.
+\scoring{0,50: ví dụ đủ đo--truyền--xử lý--điều khiển; 0,25: M2M/IIoT; 0,25: kết quả sử dụng thực tiễn.}
+\src{Chapter 1, slide 14, 17, 19--20; Chapter 8, ví dụ đề tài tưới và giám sát.}
+\begin{warningbox}Chỉ viết ``IoT là kết nối các thiết bị bằng Internet'' thường chưa đủ: thiếu nhận dạng, cảm nhận, xử lý, hành động, hệ thống cụ thể. Không đồng nhất cảm biến với toàn bộ thiết bị IoT.\end{warningbox}
+
+\clearpage
+\section{Câu 2. Trình bày mô hình kiến trúc phân lớp của hệ thống IoT (4 lớp)}
+\begin{questionbox}
+``Trình bày mô hình kiến trúc 4 lớp của hệ thống IoT; giải thích chức năng từng lớp và lấy ví dụ.'' \textbf{Thang dự kiến 5,0 điểm.}
+\end{questionbox}
+\pointpart{1}{Nêu đúng tên mô hình, thứ tự và quy tắc vận hành}
+Theo slide, \kw{Service-Oriented Based Architecture (SoA)} là một cách xây dựng \kw{kiến trúc IoT bốn lớp} trong đó các khối chức năng giao tiếp bằng giao diện/giao thức dịch vụ. Thứ tự \kw{từ dưới lên}: \kw{(1) Perception, (2) Network, (3) Data Processing, (4) Application}. Dữ liệu đi từ vật lý lên ứng dụng; yêu cầu và lệnh điều khiển có thể đi chiều ngược xuống thiết bị. Phân lớp giúp tách biệt việc cảm nhận, vận chuyển, xử lý và cung cấp chức năng cho người dùng.
+
+\begin{center}\begin{tikzpicture}[>=Latex,node distance=2mm, every node/.style={font=\small}, bx/.style={draw=navy,fill=light,rounded corners=1.5mm,text width=99mm,minimum height=11mm,align=center}]
+\node[bx] (app) {\textbf{4. APPLICATION LAYER} --- Ứng dụng, dịch vụ, giao diện};
+\node[bx,below=of app] (proc) {\textbf{3. DATA PROCESSING LAYER} --- Xác thực, xử lý, lưu trữ, phân tích};
+\node[bx,below=of proc] (net) {\textbf{2. NETWORK LAYER} --- Kết nối, truyền và định tuyến};
+\node[bx,below=of net] (per) {\textbf{1. PERCEPTION LAYER} --- Cảm biến, nhận dạng, dữ liệu vật lý};
+\draw[<->,very thick,teal] (app.south) -- (proc.north);
+\draw[<->,very thick,teal] (proc.south) -- (net.north);
+\draw[<->,very thick,teal] (net.south) -- (per.north);
+\end{tikzpicture}\end{center}
+\scoring{0,25: tên SoA; 0,50: đủ bốn lớp đúng thứ tự; 0,25: chiều dữ liệu và ý nghĩa phân lớp.}
+\src{Chapter 1, slide 33 (trang PDF 34) và slide 34--35 (trang PDF 35--36).}
+
+\pointpart{2}{Perception Layer --- lớp cảm nhận/nhận thức}
+\kw{Chức năng:} nhận dạng đối tượng/nút IoT và \kw{thu thập dữ liệu của môi trường vật lý} bằng cảm biến; tiếp nhận đầu vào qua tín hiệu analog/số và tạo dữ liệu có thể chuyển lên lớp mạng. Thành phần: RFID/định danh, cảm biến nhiệt độ, ánh sáng, độ ẩm, chuyển động, camera, cảm biến khí; MCU giao tiếp cảm biến qua ADC, GPIO, I\textsuperscript{2}C hoặc SPI. Ví dụ: cảm biến độ ẩm đất cung cấp số đo $28\%$. \kw{Đặc điểm:} rất gần thế giới thực; năng lượng, độ chính xác và thời gian lấy mẫu bị giới hạn; phải phân biệt loại cảm biến. Actuator thường là phần cứng ở đầu cuối nhận lệnh để tác động ngược lại môi trường.
+\scoring{0,25: tên; 0,25: thu thập/nhận dạng; 0,25: phần cứng/ví dụ; 0,25: đặc điểm tín hiệu hoặc giới hạn.}
+\src{Chapter 1, slide 35; Chapter 2, slide 3--9.}
+
+\pointpart{3}{Network Layer --- lớp mạng/truyền tải}
+\kw{Chức năng:} làm cầu nối giữa các nút cảm nhận, gateway và phần xử lý; \kw{truyền dữ liệu, tạo kết nối, địa chỉ hóa, chuyển tiếp/định tuyến} trên một hoặc nhiều công nghệ mạng. Ví dụ: cảm biến gửi gói qua Zigbee/BLE/Wi-Fi/LoRaWAN đến gateway; gateway chuyển thông tin qua Ethernet/4G tới máy chủ. \kw{Đặc điểm:} chịu tác động bởi khoảng cách, thông lượng, độ trễ, xác suất mất gói, nhiễu và tiêu thụ năng lượng; có thể yêu cầu dịch giao thức và cơ chế bảo vệ truyền dẫn. \kw{Không} nhầm lớp mạng của kiến trúc SoA với riêng \emph{Internet layer} của TCP/IP: hai cách phân lớp phục vụ hai mục đích khác nhau.
+\scoring{0,25: tên; 0,25: kết nối/vận chuyển; 0,25: giao thức/ví dụ; 0,25: đặc điểm và đánh đổi.}
+\src{Chapter 1, slide 24 và 35; Chapter 3, slide 1 và 41.}
+
+\pointpart{4}{Data Processing Layer --- lớp xử lý dữ liệu/trung gian}
+\kw{Chức năng:} nhận dữ liệu từ tầng mạng, \kw{kiểm tra tính hợp lệ/xác thực nguồn, bảo vệ dữ liệu}, lọc nhiễu, tổng hợp, chuẩn hóa, lưu trữ và phân tích để tạo thông tin hữu ích. Có thể triển khai trên \kw{edge, fog hoặc cloud}; sử dụng cơ sở dữ liệu, luật ngưỡng, phân tích chuỗi thời gian, AI/ML. Ví dụ: gateway loại bỏ số đo nhiệt độ lỗi rồi server tính nhiệt độ trung bình và phát hiện vượt ngưỡng. \kw{Đặc điểm:} chia tải giữa xử lý cục bộ (độ trễ thấp, ít phụ thuộc Internet) và cloud (lưu trữ/tính toán mở rộng); đảm bảo toàn vẹn, phân quyền và quyền riêng tư. Slide nhấn mạnh nhận dữ liệu từ lớp cảm nhận và kiểm tra dữ liệu đến từ nguồn hợp lệ, được bảo vệ.
+\scoring{0,25: tên; 0,25: xử lý/lưu; 0,25: an ninh/xác thực; 0,25: edge/cloud và ví dụ.}
+\src{Chapter 1, slide 34; Chapter 4, slide 2--4; Chapter 5, slide 4--5.}
+
+\pointpart{5}{Application Layer --- lớp ứng dụng/dịch vụ}
+\kw{Chức năng:} sử dụng dữ liệu đã được xử lý để cung cấp \kw{dịch vụ theo bài toán} (cảnh báo, giám sát, thống kê, tự động hóa, giao diện/điều khiển), quản lý quyền truy cập và yêu cầu nghiệp vụ. Người dùng tương tác thông qua app/web/API; quy tắc ở lớp này có thể sinh lệnh đưa về thiết bị. Ví dụ: dashboard hiển thị độ ẩm đất, phát cảnh báo thiếu nước và cho phép bật van. \kw{Đặc điểm:} hướng người dùng và nghiệp vụ, không đo vật lý trực tiếp; chất lượng quyết định phụ thuộc độ chính xác và kịp thời dữ liệu dưới tầng.
+\scoring{0,25: tên; 0,25: dịch vụ/chức năng; 0,25: giao diện/quyết định; 0,25: ví dụ và tương tác ngược.}
+\src{Chapter 1, slide 34; slide 26--27.}
+\begin{warningbox}Bốn \emph{thành phần} ``Things, Gateway, Cloud, Services'' (slide 22--27) khác bốn \emph{lớp} SoA (slide 33--35). Nếu câu hỏi chứa chữ ``phân lớp (4 lớp)'', nên ưu tiên trình bày đúng SoA và nêu cách đối chiếu các khối thực tế, không thay thế tên lớp.\end{warningbox}
+
+\clearpage
+\section{Câu 3. Cảm biến, cơ cấu chấp hành, vi xử lý và vi điều khiển}
+\begin{questionbox}
+``Trình bày khái niệm, vai trò và sự khác nhau giữa cảm biến, cơ cấu chấp hành, vi xử lý, vi điều khiển trong hệ thống IoT.'' \textbf{Thang dự kiến 5,0 điểm.}
+\end{questionbox}
+\pointpart{1}{Cảm biến (Sensor) --- khái niệm, nguyên lý và phân loại}
+\kw{Sensor} là linh kiện/hệ thống chuyển đổi đại lượng vật lý, hóa học hoặc sinh học cần đo thành tín hiệu có thể thu nhận, thường là tín hiệu điện: $s=f(m)$, với $m$ là đại lượng đo và $s$ là tín hiệu đầu ra. Ví dụ: nhiệt độ thành điện áp/số đo; độ ẩm, áp suất, ánh sáng thành dữ liệu. \kw{Vai trò:} đầu vào của nút IoT, cung cấp bằng chứng về trạng thái thực. \kw{Phân loại:} analog (điện áp/dòng liên tục cần ADC nếu đưa vào bộ xử lý số), digital (đầu ra số hoặc giao tiếp I\textsuperscript{2}C/SPI/1-Wire), chủ động/thụ động theo phương thức kích thích trong bài giảng. \kw{Thông số:} dải đo, độ nhạy, độ phân giải, sai số, tốc độ lấy mẫu. Lưu ý ``thụ động'' trong ngữ cảnh phân loại theo cơ chế đo không có nghĩa rằng \emph{toàn bộ module điện tử} chắc chắn không cần cấp điện.
+\scoring{0,25: định nghĩa $s=f(m)$; 0,25: vai trò; 0,25: phân loại; 0,25: ví dụ/thông số.}
+\src{Chapter 2, slide 3--11 (trang PDF 4--12).}
+
+\pointpart{2}{Cơ cấu chấp hành (Actuator) --- khái niệm và điều khiển}
+\kw{Actuator} là bộ phận \kw{biến lệnh/tín hiệu điều khiển thành tác động vật lý} lên hệ thống, như chuyển động, lực, nhiệt, ánh sáng hoặc lưu lượng. Nó nhận đầu ra từ vi điều khiển nhưng thường \kw{cần tầng công suất/driver} vì GPIO không đủ dòng hoặc điện áp. Ví dụ: relay đóng bơm, MOSFET điều chỉnh quạt, servo quay van, động cơ bước di chuyển cánh tay robot, LED phát sáng/buzzer cảnh báo. Actuator có thể điều khiển ON/OFF, PWM hoặc vòng kín với phản hồi cảm biến.
+\scoring{0,25: định nghĩa; 0,25: vị trí đầu ra; 0,25: ví dụ; 0,25: driver và cơ chế điều khiển.}
+\src{Chapter 2, slide 12--14 (trang PDF 13--15).}
+
+\pointpart{3}{Vi xử lý (Microprocessor/MPU) --- chức năng và đặc trưng}
+\kw{Vi xử lý} là bộ xử lý trung tâm thực hiện tập lệnh, tính toán số học/logic, điều phối luồng xử lý và thực thi phần mềm. Trong mô hình MPU điển hình, \kw{CPU không tích hợp sẵn đầy đủ RAM/Flash và ngoại vi điều khiển như một MCU}, nên hệ thống cần bộ nhớ, chip giao tiếp và mạch hỗ trợ thích hợp. \kw{Ưu điểm:} hiệu năng xử lý lớn, thích hợp hệ điều hành đa nhiệm (chẳng hạn Linux), xử lý ảnh/AI, dịch vụ mạng và edge gateway. \kw{Đánh đổi:} công suất, giá thành và độ phức tạp nền tảng thường cao hơn nút MCU đơn giản. \kw{Ví dụ:} bộ xử lý ứng dụng chạy Linux trên Raspberry Pi; \emph{Raspberry Pi là máy tính bo mạch đơn (SBC), không phải tên một MCU}.
+\scoring{0,25: định nghĩa CPU; 0,25: quan hệ RAM/ngoại vi; 0,25: vai trò và phần mềm; 0,25: ví dụ/đánh đổi.}
+\src{Đối chiếu Chapter 2, các mục Microcontroller và Raspberry Pi; McEwen--Cassimally (2014), chương 5. Phân biệt MPU--MCU là diễn giải kỹ thuật bổ sung.}
+
+\pointpart{4}{Vi điều khiển (Microcontroller/MCU) --- cấu trúc và đặc trưng}
+\kw{MCU} là \kw{mạch tích hợp có CPU, bộ nhớ chương trình/biến và ngoại vi vào--ra} trên cùng chip để thực hiện nhiệm vụ nhúng. Khối điển hình: CPU + Flash + SRAM + GPIO + timer/PWM + ADC + giao tiếp UART/I\textsuperscript{2}C/SPI; một số MCU có Wi-Fi/Bluetooth tích hợp. Thiết bị chạy firmware đọc cảm biến, áp thuật toán, điều khiển chấp hành và truyền dữ liệu; có thể hỗ trợ ngủ tiết kiệm pin, khởi động nhanh. Ví dụ: ATmega328P trên Arduino Uno; ESP32 là họ SoC chứa vi điều khiển và các khối kết nối; Arduino Uno là \emph{bo mạch phát triển}, không phải bản thân IC ATmega. \kw{Không bắt buộc} mọi MCU đều có ADC hoặc Wi-Fi.
+\scoring{0,25: định nghĩa tích hợp; 0,25: các khối; 0,25: ứng dụng năng lượng/điều khiển; 0,25: ví dụ đúng.}
+\src{Chapter 2, slide 17--25, các mục ESP8266/ESP32.}
+
+\pointpart{5}{So sánh bốn phần tử và ví dụ ghép thành nút IoT}
+\begin{center}\small
+\begin{tabularx}{\linewidth}{@{}p{24mm}X X@{}}\toprule
+\textbf{Thành phần} & \textbf{Đầu vào/đầu ra chính} & \textbf{Vai trò}\\\midrule
+Sensor & Đại lượng môi trường $\to$ tín hiệu điện/số & Thu thập thông tin\\
+Actuator & Lệnh/điện năng $\to$ tác động vật lý & Tác động môi trường\\
+MCU & Dữ liệu/lệnh $\leftrightarrow$ ngoại vi & Điều khiển nhúng, lấy mẫu, phản hồi\\
+MPU & Dữ liệu/phần mềm $\leftrightarrow$ bộ nhớ, hệ điều hành & Xử lý ứng dụng phức tạp, gateway/edge\\\bottomrule
+\end{tabularx}\end{center}
+\kw{Ví dụ:} cảm biến nhiệt độ $\rightarrow$ MCU ESP32 (đọc, đối chiếu ngưỡng) $\rightarrow$ transistor/relay $\rightarrow$ quạt; dữ liệu được gửi lên Raspberry Pi (MPU/SBC) để lưu và trực quan hoá. \kw{Sensor là phần tử đầu vào}, \kw{actuator là phần tử đầu ra}, MCU/MPU là bộ xử lý, không phải thiết bị đo/chấp hành.
+\scoring{0,50: so sánh chính xác ít nhất ba tiêu chí; 0,50: ví dụ dòng tín hiệu đầy đủ và đúng vai trò.}
+\src{Chapter 2, slide 14--17 và 24--25; James--Seth--Mukhopadhyay (2022), chương 1--3.}
+\begin{warningbox}Đừng viết ``microprocessor và microcontroller là một'' hoặc ``Arduino Uno là một CPU''. Không cấp động cơ trực tiếp từ GPIO; cần mạch driver theo tải. Nhớ từ khóa \emph{cảm biến: đo} -- \emph{chấp hành: tác động} -- \emph{MCU: tích hợp} -- \emph{MPU: xử lý}.\end{warningbox}
+
+\clearpage
+\section{Câu 4. Trình bày mô hình truyền thông bốn lớp dùng trong IoT}
+\begin{questionbox}
+``Mô hình truyền thông trong IoT (4 lớp); nêu vai trò, đặc điểm và giao thức mỗi lớp.'' \textbf{Thang dự kiến 5,0 điểm.}\par
+\small\emph{Giả thiết khi soạn:} người ra đề nói tới \textbf{TCP/IP 4-layer model}, vì đề gợi ý từng ``layer'' trong truyền thông. Đây là \textbf{phương án ôn theo ngăn xếp TCP/IP}; tài liệu Chương 3 trình bày các công nghệ/giao thức rải rác, không có lời văn xác nhận đây là đúng bốn lớp mà giảng viên sẽ hỏi.
+\end{questionbox}
+\pointpart{1}{Tổng quan TCP/IP bốn lớp, thứ tự và đóng gói}
+\kw{Ngăn xếp TCP/IP} chuẩn hóa việc trao đổi dữ liệu qua nhiều mạng: \kw{(1) Link/Network Access, (2) Internet, (3) Transport, (4) Application}. Khi gửi, dữ liệu ứng dụng đi xuống từng lớp và được thêm phần thông tin điều khiển (encapsulation): \kw{Application data $\to$ TCP segment/UDP datagram $\to$ IP packet $\to$ frame/bits}; khi nhận, các lớp bóc tách ngược. Mỗi lớp cung cấp dịch vụ cho lớp trên, không phụ thuộc hoàn toàn vào công nghệ vật lý cụ thể.
+\begin{center}\begin{tikzpicture}[>=Latex,node distance=1.7mm,every node/.style={font=\small},b/.style={draw=navy,fill=light,rounded corners,minimum height=10mm,text width=114mm,align=center}]
+\node[b] (a) {\textbf{4 APPLICATION} -- MQTT, HTTP/HTTPS, CoAP, DNS};
+\node[b,below=of a] (t) {\textbf{3 TRANSPORT} -- TCP, UDP; cổng, phiên truyền};
+\node[b,below=of t] (i) {\textbf{2 INTERNET} -- IPv4/IPv6, IP routing, ICMP};
+\node[b,below=of i] (l) {\textbf{1 NETWORK ACCESS / LINK} -- Ethernet, Wi-Fi, liên kết vô tuyến};
+\draw[<->,teal,thick] (a.south) -- (t.north);
+\draw[<->,teal,thick] (t.south) -- (i.north);
+\draw[<->,teal,thick] (i.south) -- (l.north);
+\end{tikzpicture}\end{center}
+\scoring{0,50: đủ bốn tên đúng thứ tự; 0,25: quá trình đóng/bóc gói; 0,25: phân biệt kiến trúc giao thức với SoA.}
+\src{McEwen--Cassimally (2014), chương 3, ``IP Protocol Suite (TCP/IP)'', tr. 42--61; Chapter 3, các phần IPv4/IPv6, TCP vs UDP, HTTP/CoAP/MQTT.}
+
+\pointpart{2}{Lớp Link/Network Access --- truy nhập mạng/liên kết}
+\kw{Chức năng:} truyền \kw{frame/bit} qua môi trường vật lý cục bộ, quy định cơ chế truy nhập kênh, địa chỉ liên kết (nếu có), phát hiện lỗi khung và kết nối với nút kế cận. Ví dụ: \kw{Ethernet, Wi-Fi IEEE 802.11}; đối với IoT, \kw{IEEE 802.15.4} là công nghệ liên kết/PHY dùng dưới Zigbee hoặc 6LoWPAN. \kw{Đặc điểm:} quyết định phần lớn phạm vi thực tế, thông lượng, nhiễu, công suất phát, điện năng và topology một chặng. BLE/Zigbee/LoRaWAN là những \emph{bộ công nghệ có nhiều thành phần lớp}, không nên ép toàn bộ giao thức vào đúng một ô TCP/IP; một số mạng cần gateway/chuyển tiếp để đưa lên IP.
+\scoring{0,25: nhiệm vụ; 0,25: dữ liệu frame/bit; 0,25: ví dụ; 0,25: đặc trưng phạm vi/điện năng.}
+\src{Chapter 3, slide 18--41; McEwen--Cassimally (2014), chương 3.}
+
+\pointpart{3}{Lớp Internet --- địa chỉ hóa và định tuyến liên mạng}
+\kw{Chức năng:} nhận gói tin từ Transport, gắn địa chỉ IP nguồn/đích, lựa chọn đường đi qua các router giữa nhiều mạng theo mô hình \kw{best effort}. \kw{Giao thức:} IPv4 (địa chỉ 32 bit), IPv6 (128 bit), ICMP; \kw{6LoWPAN} là lớp thích nghi giúp mang IPv6 qua các liên kết công suất thấp như IEEE 802.15.4, không phải giao thức định tuyến độc lập. \kw{Đặc điểm:} IP không mặc nhiên bảo đảm chuyển đủ, đúng thứ tự hay đúng thời gian; các yêu cầu đó tùy tầng trên/cơ chế ứng dụng. Trong IoT, IPv6 tạo không gian định danh địa chỉ lớn; thiết bị không cần địa chỉ IP công khai để trở thành một phần hệ thống IoT.
+\scoring{0,25: địa chỉ; 0,25: routing; 0,25: IPv4/IPv6 và ví dụ; 0,25: best effort/giới hạn.}
+\src{Chapter 3, slide 11--16; Hassan (2018), chương 3.}
+
+\pointpart{4}{Lớp Transport --- truyền tải đầu cuối}
+\kw{Chức năng:} vận chuyển dữ liệu giữa \kw{các tiến trình} bằng port, phân kênh/ghép kênh và hỗ trợ các đặc tính truyền tải. \kw{TCP} là hướng kết nối, có đánh số thứ tự, xác nhận và truyền lại, kiểm soát luồng/tắc nghẽn; phù hợp MQTT, HTTP/1.1, HTTP/2. \kw{UDP} không thiết lập phiên TCP, header nhỏ, ít overhead và không tự cam kết nhận gói/đúng thứ tự; phù hợp CoAP trong mô hình truyền thống và nhiều hệ thống thời gian thực. \kw{TLS} thường bảo vệ luồng trên TCP; \kw{DTLS} thường bảo vệ datagram UDP. \emph{Không đồng nghĩa TCP bảo đảm ứng dụng xử lý thành công}, hay UDP luôn nhanh hơn trong mọi điều kiện.
+\scoring{0,25: nhiệm vụ/port; 0,25: TCP; 0,25: UDP; 0,25: so sánh và dẫn giao thức.}
+\src{Chapter 3, slide 64--68 và 71--74; Chapter 6, slide 7--9; McEwen--Cassimally (2014), chương 3.}
+
+\pointpart{5}{Lớp Application --- giao thức và mô hình trao đổi dữ liệu}
+\kw{Chức năng:} định nghĩa \kw{ý nghĩa thông điệp, định dạng yêu cầu/đáp ứng, chủ đề bản tin và API} của ứng dụng IoT. \kw{HTTP/HTTPS} dùng các phương thức GET, POST, PUT, DELETE, thường request--response và dễ tích hợp web. \kw{CoAP} hướng REST cho thiết bị hạn chế tài nguyên, thường chạy UDP, có bản tin Confirmable/Non-confirmable. \kw{MQTT} gọn nhẹ, chạy phổ biến trên TCP, trao đổi \kw{publish/subscribe} thông qua broker/topic và có QoS 0/1/2. Ví dụ: \texttt{sensor/soil/1} được ESP32 publish, dashboard subscribe để cập nhật; riêng API hỏi cấu hình có thể dùng HTTP GET. \kw{Phân biệt}: Application layer quy định \emph{trao đổi nội dung gì và theo cách nào}, không phải băng tần và tầm phủ.
+\scoring{0,25: nhiệm vụ; 0,25: HTTP; 0,25: CoAP; 0,25: MQTT và ví dụ.}
+\src{Chapter 3, slide 56--74.}
+\begin{warningbox}Nếu giáo viên định hỏi \textbf{4 loại giao tiếp H2M--M2M--M2H--H2H} (Chapter 3, slide 3--7) thay vì TCP/IP, đó là \emph{bốn kiểu tác nhân giao tiếp}, \textbf{không phải bốn lớp}. Để dự phòng, nhớ: Human-to-Machine (người ra lệnh), Machine-to-Machine (máy tự trao đổi), Machine-to-Human (máy cảnh báo), Human-to-Human (người trao đổi). Khi có ảnh đề thi, phải bám chính xác cụm từ giảng viên.\end{warningbox}
+
+\clearpage
+\section{Câu 5. Nêu 5 công nghệ/giao thức kết nối IoT: tốc độ, đặc điểm, ứng dụng}
+\begin{questionbox}
+``Nêu 5 giao thức truyền thông phù hợp cho cùng một tình huống IoT, tốc độ truyền và đặc điểm của từng loại; so sánh lựa chọn.'' \textbf{Thang dự kiến 5,0 điểm.}
+\end{questionbox}
+\begin{notesbox}[title={Tình huống thống nhất cho cả năm phương án}]
+\kw{Nông trại thông minh diện rộng:} nhiều nút pin gửi các gói nhỏ (nhiệt độ, độ ẩm, mức nước) mỗi 10--30 phút về máy chủ; một số điểm cách gateway/trạm từ vài trăm mét tới nhiều kilômét; cần xem xét vùng phủ, chi phí dịch vụ, mức tiêu thụ năng lượng và tần suất dữ liệu. Năm công nghệ được \emph{so sánh như năm phương án triển khai thay thế}, không có nghĩa cả năm cùng phải lắp trong một nút. \kw{Mỗi mục 1 điểm} gồm: tên/loại (0,25), tốc độ điển hình (0,25), vùng phủ và điện năng (0,25), ưu/nhược và sự phù hợp tình huống (0,25).
+\end{notesbox}
+\pointpart{1}{LoRaWAN --- mạng diện rộng công suất thấp}
+\kw{LoRaWAN} là giao thức mạng LPWAN trên nền vô tuyến LoRa, có thể tổ chức nhiều end node nối với gateway; mạng có thể do đơn vị tự triển khai. \kw{Tốc độ: khoảng 0,3--50 kbit/s} trong bảng slide (phụ thuộc cấu hình/điều chế/khu vực); \kw{tầm phủ: khoảng 15 km} theo ví dụ trong slide, \emph{không phải bảo đảm 15 km mọi địa hình}. \kw{Ưu:} truyền xa, dữ liệu nhỏ, hỗ trợ pin lâu và nhiều nút. \kw{Hạn chế:} duty cycle/quy định băng tần, thời gian phát và downlink hạn chế, không thích hợp video hay dữ liệu lớn. \kw{Ứng dụng:} cảm biến đất xa khu dân cư, gateway bố trí trên vị trí cao, gửi vài chục byte định kỳ. Cần gateway có backhaul Internet.
+\scoring{0,25 + 0,25 + 0,25 + 0,25 theo tiêu chí trên.}
+\src{Chapter 3, slide 34, slide 41 (PDF trang 35 và 42).}
+
+\pointpart{2}{Sigfox --- mạng LPWAN thông điệp nhỏ, tần suất thấp}
+\kw{Sigfox} là dịch vụ mạng LPWAN do nhà cung cấp vận hành, tối ưu \kw{gói tin ngắn gửi thưa}. \kw{Tốc độ: 10--1000 bit/s} theo bảng slide (không được hiểu là tốc độ mọi cấu hình/khu vực). \kw{Tầm phủ: 3--50 km} theo bảng học liệu, chịu ảnh hưởng vùng phủ thực tế. \kw{Ưu:} băng thông rất thấp và tiết kiệm năng lượng, thích hợp đo đạc sự kiện/định kỳ. \kw{Hạn chế:} phụ thuộc hạ tầng/dịch vụ Sigfox, ràng buộc dung lượng/thông điệp và chiều xuống; chỉ chọn khi khu vực thực sự có mạng cung cấp. \kw{Ứng dụng:} cảm biến mực nước gửi cảnh báo hoặc chỉ số rất ít lần trong ngày, không phù hợp điều khiển vòng kín với phản hồi dày.
+\scoring{0,25 + 0,25 + 0,25 + 0,25 theo tiêu chí trên.}
+\src{Chapter 3, slide 33, slide 41 (PDF trang 34 và 42).}
+
+\pointpart{3}{NB-IoT --- LPWAN trên hạ tầng mạng di động}
+\kw{NB-IoT} là chuẩn LPWA của 3GPP, hướng tới số lượng lớn cảm biến dữ liệu nhỏ, có \kw{deep indoor coverage}, tiết kiệm pin qua các chế độ ngủ và dùng hạ tầng mạng nhà mạng. \kw{Tốc độ: thường cỡ vài chục đến vài trăm kbit/s}; \emph{con số tham khảo ngoài bảng tốc độ slide, thay đổi theo release, thiết bị và nhà mạng}. \kw{Vùng phủ: theo ô mạng di động và khả năng phủ sâu, không thể gán một bán kính cố định}; có thể tiếp cận cảm biến xa nếu nhà mạng hỗ trợ. \kw{Ưu:} không cần tự dựng gateway LoRaWAN, hỗ trợ nhiều nút; \kw{nhược:} phụ thuộc vùng phủ NB-IoT, SIM/eSIM, phí duy trì và độ trễ có thể tăng khi thiết bị ngủ. \kw{Ứng dụng:} công tơ/mức nước ở địa điểm có phủ sóng NB-IoT, vài chục byte mỗi kỳ.
+\scoring{0,25 + 0,25 + 0,25 + 0,25 theo tiêu chí trên.}
+\src{Chapter 3, slide 40 mô tả NB-IoT; khoảng tốc độ là kiến thức kỹ thuật tham khảo bổ sung, KHÔNG có trong bảng slide 41.}
+
+\pointpart{4}{LTE-M (Cat-M1/eMTC) --- LPWAN di động hỗ trợ lưu động tốt hơn}
+\kw{LTE-M} là chuẩn LPWA thuộc 3GPP, có phiên bản \kw{LTE Cat-M1/eMTC}, thiết kế cho M2M/IoT trên hạ tầng LTE. \kw{Tốc độ: ở mức hàng trăm kbit/s đến khoảng 1 Mbit/s} với Cat-M1, \emph{mang tính tham khảo ngoài slide, tùy cấu hình/release}. \kw{Vùng phủ: phụ thuộc nhà mạng và băng tần, thường là diện rộng}; tiêu thụ điện tốt hơn 4G băng rộng trong ứng dụng đo định kỳ nhưng cao/thấp thực tế phụ thuộc chu kỳ thức/ngủ. \kw{Ưu:} hỗ trợ truyền hai chiều và di động tốt hơn kịch bản thiết bị rất tĩnh; \kw{nhược:} không phải nơi nào có 4G cũng được kích hoạt LTE-M, cần module/SIM/phí dịch vụ tương thích. \kw{Ứng dụng:} cảm biến gắn trên máy kéo/xe nông trại có di chuyển và cần gửi nhiều bản tin hơn một nút NB-IoT ngủ lâu.
+\scoring{0,25 + 0,25 + 0,25 + 0,25 theo tiêu chí trên.}
+\src{Chapter 3, slide 39 nêu LTE-M/eMTC; khoảng tốc độ là thông tin bổ sung, KHÔNG ghi trong slide 41.}
+
+\pointpart{5}{4G LTE băng rộng --- tốc độ cao đổi lấy điện năng/chi phí}
+\kw{4G LTE thông thường} là công nghệ truy nhập di động băng rộng. \kw{Tốc độ: bảng slide 41 ghi 4G tới khoảng 600 Mbit/s} (giá trị chuẩn/lý thuyết của một số cấu hình mạng, \kw{không phải tốc độ upload cảm biến luôn đạt}); khả năng thực tế biến thiên mạnh. \kw{Phạm vi: theo trạm phát và vùng phủ nhà mạng} chứ không lấy số \emph{30 m} trong dòng Cellular của bảng slide làm bán kính phủ mạng di động (dòng đó không thích hợp để diễn giải phạm vi trạm gốc). \kw{Ưu:} băng thông lớn, hai chiều và dễ truyền dữ liệu mở rộng, phù hợp gateway tập trung, hình ảnh camera; \kw{nhược:} module truyền 4G và thời gian hoạt động khiến nhu cầu pin cao hơn LPWAN trong nút đo nhỏ, thêm SIM/data và chi phí. \kw{Ứng dụng:} đặt 4G tại \emph{gateway} để đẩy nhiều cảm biến LoRaWAN lên cloud, hoặc dùng camera giám sát ruộng; chỉ dùng trực tiếp trên nút cảm biến nếu ngân sách năng lượng cho phép.
+\scoring{0,25 + 0,25 + 0,25 + 0,25 theo tiêu chí trên.}
+\src{Chapter 3, slide 36, slide 41; cách diễn giải phạm vi và hiệu năng thực tế là phân tích kỹ thuật bổ sung.}
+
+\begin{notesbox}[title={Bảng so sánh nhanh --- CHỈ cho tình huống nông trại diện rộng}]
+\small\begin{tabularx}{\linewidth}{@{}p{18mm}p{30mm}p{26mm}X@{}}\toprule
+\textbf{Công nghệ} & \textbf{Tốc độ tham khảo} & \textbf{Vùng phủ} & \textbf{Điểm quyết định}\\\midrule
+LoRaWAN & 0,3--50 kbit/s (slide) & Cỡ km; slide nêu 15 km & Có thể tự xây gateway; gói nhỏ, pin lâu\\
+Sigfox & 10--1000 bit/s (slide) & 3--50 km (slide) & Siêu ít dữ liệu; kiểm tra mạng dịch vụ tại địa phương\\
+NB-IoT & Vài chục--vài trăm kbit/s (bổ sung) & Vùng phủ nhà mạng & Nút cố định, phủ sâu, tiết kiệm pin\\
+LTE-M & Hàng trăm kbit/s tới $\sim$1 Mbit/s (bổ sung) & Vùng phủ nhà mạng & Nút di chuyển/giao tiếp hai chiều\\
+4G LTE & Slide ghi đến 600 Mbit/s & Vùng phủ nhà mạng & Gateway/ảnh/video; pin và chi phí cao hơn\\\bottomrule
+\end{tabularx}\normalsize\end{notesbox}
+\begin{notesbox}[title={Nếu đổi tình huống thành mạng tầm ngắn --- 5 lựa chọn khác ở slide 41}]
+\kw{Wi-Fi} (2,4/5 GHz, slide: 150--600 Mbit/s, khoảng 50 m): tốc độ cao, điện năng đáng kể, thích hợp camera trong nhà. \kw{Bluetooth/BLE} (2,4 GHz, slide: 125 kbit/s tới mức Mbit/s, khoảng 100 m): công suất thấp/thiết bị đeo; giới hạn tầm xa thực tế. \kw{Zigbee} (2,4 GHz, slide: 20--250 kbit/s, khoảng 100 m): mạng cảm biến, mesh, tiết kiệm pin. \kw{Z-Wave} (dải dưới GHz phụ thuộc khu vực, slide: 100 kbit/s, khoảng 100 m): điều khiển thiết bị nhà thông minh. \kw{NFC} (13,56 MHz, slide: 100--420 kbit/s, khoảng 4 cm): định danh/ghép đôi chạm gần, \kw{không dùng để giám sát xuyên nhà}. Đây là \emph{những lựa chọn cho cùng hệ sinh thái nhà thông minh}, nhưng NFC chỉ dùng khâu chạm/commissioning; nó không thay thế đường giám sát liên tục.
+\src{Chapter 3, bảng slide 41. Các con số của slide là đại diện, thay đổi theo phiên bản và cách triển khai.}
+\end{notesbox}
+\begin{warningbox}Bị trừ điểm khi viết \emph{MQTT/HTTP/CoAP} như năm \emph{công nghệ vô tuyến} có tần số và cự ly cố định; khi nhầm LoRa (lớp radio) với LoRaWAN (giao thức mạng); hoặc chép 600 Mbit/s của 4G làm cam kết tốc độ upload mọi nơi. Đừng khẳng định Sigfox/NB-IoT/LTE-M đã sẵn có tại một địa bàn cụ thể khi chưa kiểm tra nhà mạng.\end{warningbox}
+
+\clearpage
+\section{Câu 6. Các mô hình truyền dữ liệu trong IoT:\texorpdfstring{\\}{ } Pub/Sub, Request/Response, MQTT, HTTP, CoAP}
+\begin{questionbox}
+``Trình bày các mô hình truyền dữ liệu trong hệ thống IoT, nguyên lý, đặc điểm và các giao thức tiêu biểu.'' \textbf{Thang dự kiến 5,0 điểm.}
+\end{questionbox}
+\pointpart{1}{Mô hình Publish/Subscribe --- phát hành/đăng ký}
+Có ba vai trò: \kw{Publisher} tạo và công bố dữ liệu, \kw{Broker} tiếp nhận/lọc/phân phối, \kw{Subscriber} đăng ký \kw{topic} để nhận bản tin liên quan. Chuỗi hoạt động: subscriber đăng ký chủ đề $\rightarrow$ publisher gửi bản tin lên broker $\rightarrow$ broker chuyển đến mọi subscriber phù hợp, không cần publisher biết địa chỉ từng bên. Đây là kiểu \kw{ghép lỏng, không đồng bộ} về mặt thông điệp, hiệu quả khi nhiều cảm biến/khách hàng trao đổi thường xuyên. Cần broker (trong MQTT điển hình), cơ chế bảo vệ topic và chiến lược xử lý khi mất mạng. \kw{Ví dụ:} cảm biến \texttt{farm/soil/01} publish độ ẩm, đồng thời bảng điều khiển và hệ cảnh báo subscribe chủ đề tương ứng.
+\scoring{0,25: ba vai trò; 0,25: topic/cơ chế luồng; 0,25: ưu/nhược; 0,25: ví dụ.}
+\src{Chapter 3, slide 56--58, slide 71--74; Hassan (2018), chương 3, mục Data Exchange.}
+
+\pointpart{2}{Mô hình Request/Response --- yêu cầu/đáp ứng}
+\kw{Client} chủ động gửi \kw{request} tới \kw{server/resource}; server xử lý và trả \kw{response} (dữ liệu, mã trạng thái hoặc xác nhận). Phù hợp truy vấn theo nhu cầu, thay đổi cấu hình và API client--server; ví dụ dashboard yêu cầu \texttt{GET /devices/1/temperature}, server trả JSON có nhiệt độ. \kw{Ưu:} luồng hỏi--đáp minh bạch, dễ kiểm soát hành động và tích hợp web/REST. \kw{Hạn chế:} client phải chủ động hỏi; nếu nhiều client liên tục polling thì tăng lưu lượng, năng lượng, tải máy chủ và độ trễ phát hiện. Request/Response \kw{không đồng nghĩa} cứ có response là giao thức phải dùng TCP; CoAP dùng request/response chủ yếu trên UDP.
+\scoring{0,25: client/server; 0,25: request/response; 0,25: ưu và giới hạn; 0,25: ví dụ.}
+\src{Chapter 3, slide 58, 60--68.}
+
+\pointpart{3}{MQTT --- giao thức dữ liệu kiểu Publish/Subscribe}
+\kw{MQTT (Message Queuing Telemetry Transport)} là giao thức truyền bản tin nhẹ, dựa trên \kw{broker/topic}, phổ biến chạy trên \kw{TCP}, thường dùng trong M2M/IoT. Kết nối thường qua bước CONNECT, sau đó client có thể \kw{PUBLISH} hoặc \kw{SUBSCRIBE}; gói tin có header gọn; có ba mức QoS: \kw{0 --- at most once}, \kw{1 --- at least once} (có thể trùng), \kw{2 --- exactly once} theo ngữ nghĩa giao thức MQTT. Mức QoS cao làm tăng bản tin điều khiển/tài nguyên, \kw{không} đồng nghĩa bảo đảm actuator thực thi chính xác một lần trong mọi tình huống. Có thể bảo vệ bằng TLS, xác thực client và phân quyền topic. Ví dụ ESP32 publish \texttt{farm/soil/01} mỗi 15 phút lên broker, hai subscriber nhận để ghi CSDL và cảnh báo.
+\scoring{0,25: định nghĩa/lightweight; 0,25: broker/topic/TCP; 0,25: QoS 0--2; 0,25: ví dụ hoặc bảo mật.}
+\src{Chapter 3, slide 71--74; Chapter 5, sơ đồ kiến trúc cloud ở slide 9.}
+
+\pointpart{4}{HTTP/HTTPS --- trao đổi theo Request/Response hướng web}
+\kw{HTTP} là giao thức tầng ứng dụng trên nền web, thường chạy trên \kw{TCP} ở HTTP/1.1 và HTTP/2; \kw{HTTPS} là HTTP được bảo vệ bằng TLS. HTTP tuân thủ tính \kw{stateless} ở ngữ nghĩa yêu cầu; phương thức phổ biến \kw{GET} (đọc), \kw{POST} (gửi/tạo/xử lý), \kw{PUT} (thay thế), \kw{PATCH} (sửa một phần), \kw{DELETE} (xóa). Dữ liệu có thể là JSON; server cung cấp tài nguyên qua URL. \kw{Ưu:} phổ biến, chuẩn web/API, tích hợp dễ. \kw{Hạn chế:} request/response và header/thiết lập kết nối có thể gây chi phí đáng kể với thiết bị yếu, polling nhiều cảm biến không hiệu quả. Ví dụ app gọi \texttt{GET /api/devices/1}; app gửi \texttt{POST /api/pump/command}. \emph{Lưu ý bổ sung:} HTTP/3 dùng QUIC trên UDP, vì thế không viết ``mọi phiên bản HTTP đều sử dụng TCP''.
+\scoring{0,25: HTTP và request/response; 0,25: methods/REST; 0,25: đặc tính/bảo mật; 0,25: ví dụ/đánh đổi.}
+\src{Chapter 3, slide 60--63; McEwen--Cassimally (2014), chương 3. HTTP/3 là thông tin bổ sung ngoài slide.}
+
+\pointpart{5}{CoAP --- Request/Response nhẹ cho thiết bị hạn chế tài nguyên}
+\kw{CoAP (Constrained Application Protocol)} thiết kế cho mạng băng thông thấp và nút giới hạn tài nguyên; hỗ trợ REST/resource/URI với \kw{GET, POST, PUT, DELETE}, triển khai phổ biến qua \kw{UDP}. Header gọn, hỗ trợ trao đổi \emph{asynchronous}, proxy/cache, và có thể liên kết web bằng HTTP--CoAP proxy. \kw{Bốn loại bản tin}: \kw{CON} (Confirmable, cần ACK), \kw{NON} (Non-confirmable, không cần ACK), \kw{ACK} và \kw{RST} (Reset). Có cơ chế truyền lại CON với backoff, nhưng việc sử dụng UDP không tự bảo đảm giao đến. Bảo mật có thể dùng \kw{DTLS} hoặc \kw{OSCORE}. Ví dụ gateway CoAP yêu cầu giá trị nhiệt độ của node: \texttt{GET coap://node/\allowbreak temp}; node trả payload nhỏ. \kw{So sánh ngắn:} HTTP phổ cập web nhưng overhead có thể lớn; CoAP tối ưu nút nhỏ; MQTT đặc biệt phù hợp kênh sự kiện Pub/Sub nhiều bên.
+\scoring{0,25: định nghĩa/REST; 0,25: UDP/lightweight; 0,25: CON--NON--ACK--RST; 0,25: ví dụ, bảo mật hoặc so sánh.}
+\src{Chapter 3, slide 65--68; Chapter 6, slide 7--10; Hassan (2018), chương 3.}
+
+\begin{notesbox}[title={Sơ đồ so sánh cách truyền}]
+\begin{center}\begin{tikzpicture}[>=Latex, every node/.style={font=\small},n/.style={draw=navy,fill=light,rounded corners,align=center,minimum height=8mm}]
+\node[n] (p) at (0,0) {Publisher};\node[n] (b) at (3.3,0) {Broker};\node[n] (s) at (6.6,0.7) {Subscriber A};\node[n] (t) at (6.6,-0.7) {Subscriber B};
+\draw[->,thick,teal] (p) -- node[above]{PUBLISH} (b);\draw[->,thick,teal] (b) -- (s);\draw[->,thick,teal] (b) -- (t);
+\node[font=\footnotesize\bfseries,anchor=west] at (-.6,1.35) {Publish/Subscribe};
+\node[n] (c) at (0,-2.55) {Client};\node[n] (r) at (6.6,-2.55) {Server};
+\draw[->,thick,teal] (c.north east) -- node[above]{Request} (r.north west);\draw[<-,thick,navy] (c.south east) -- node[below]{Response} (r.south west);
+\node[font=\footnotesize\bfseries,anchor=west] at (-.6,-1.65) {Request/Response};
+\end{tikzpicture}\end{center}
+\end{notesbox}
+\begin{warningbox}Đừng nói ``Pub/Sub = MQTT'' như hai từ đồng nghĩa: Pub/Sub là \emph{mô hình}, MQTT là một \emph{giao thức áp dụng mô hình}. Đừng nói ``Request/Response = HTTP''; CoAP và các giao thức khác cũng dùng kiểu hỏi--đáp. CoAP qua UDP không có nghĩa mọi bản tin đều mất đảm bảo --- \emph{Confirmable} có ACK/truyền lại cấp ứng dụng.\end{warningbox}
+
+\clearpage
+\section{Bảng barem chấm nhanh cho cả 6 câu}
+\small\begin{longtable}{@{}p{17mm}p{119mm}p{15mm}@{}}\toprule\textbf{Câu} & \textbf{5 mục bắt buộc, mỗi mục 1,0 điểm} & \textbf{Tổng}\\\midrule\endfirsthead\toprule\textbf{Câu} & \textbf{5 mục bắt buộc, mỗi mục 1,0 điểm} & \textbf{Tổng}\\\midrule\endhead
+1 & Định nghĩa IoT; thành phần; nguyên lý dữ liệu hai chiều; đặc trưng--lợi ích--thách thức; ví dụ đầy đủ và M2M/IIoT & 5,0\\
+2 & Sơ đồ SoA 4 lớp; Perception; Network; Data Processing; Application & 5,0\\
+3 & Sensor; Actuator; Microprocessor; Microcontroller; so sánh/tích hợp thành nút IoT & 5,0\\
+4 & Sơ đồ TCP/IP; Link; Internet; Transport; Application & 5,0\\
+5 & LoRaWAN; Sigfox; NB-IoT; LTE-M; 4G LTE, mỗi cái nêu đủ tên--tốc độ--vùng phủ/nguồn--đánh đổi và áp dụng chung một kịch bản & 5,0\\
+6 & Publish/Subscribe; Request/Response; MQTT; HTTP/HTTPS; CoAP & 5,0\\\bottomrule
+\end{longtable}\normalsize
+\begin{notesbox}[title={Tự chấm theo độ sâu, không chấm theo độ dài}]
+Trong mỗi mục 1 điểm, có đủ \textbf{tên/định nghĩa}; \textbf{vai trò/cơ chế}; \textbf{đặc điểm/so sánh}; \textbf{ví dụ hoặc lý giải đúng} mới chắc chắn bao phủ tối đa các ý thường được kiểm tra. Cơ chế phân điểm \emph{0,25} chỉ là công cụ học tập. Nếu bài thi thực tế yêu cầu đúng năm ý khác, thang chấm chính thức có thể khác. Ưu tiên đúng sơ đồ/tên layer và phân biệt giao thức truy nhập mạng với giao thức dữ liệu.
+\end{notesbox}
+
+\section{Tài liệu nguồn và mức độ tin cậy}
+\begin{enumerate}
+\item \textbf{Nguyễn Đắc Cử}, \emph{Chapter 1: An overview of IoT}, 50 trang PDF: định nghĩa và smart object (slide 4, 12--20); bốn thành phần (slide 22--27); kiến trúc SoA 4 lớp (slide 33--35).
+\item \textbf{Nguyễn Đắc Cử}, \emph{Chapter 2: IoT Hardware}, 79 trang PDF: sensor/actuator (slide 3--17), MCU, ATmega, Arduino, ESP và Raspberry Pi (các slide tiếp theo).
+\item \textbf{Nguyễn Đắc Cử}, \emph{Chapter 3: Networking technologies in IoT}, 81 trang PDF: công nghệ truy nhập (slide 18--41); bảng tốc độ (slide 41); mô hình Pub/Sub và Request/Response (slide 56--58); HTTP/CoAP/MQTT (slide 60--74).
+\item \textbf{Nguyễn Đắc Cử}, \emph{Chapter 4: Data storage and processing in IoT}, 58 trang PDF: data source/edge gateway/storage/analytics (slide 2--6).
+\item \textbf{Nguyễn Đắc Cử}, \emph{Chapter 5: Cloud and Fog Computing in IoT}, 25 trang PDF: layer hệ thống, nền tảng, middleware, cloud/fog (slide 4--10).
+\item \textbf{Nguyễn Đắc Cử}, \emph{Chapter 6: Security issues and solutions in IoT}, 25 trang PDF: CoAP/DTLS/OSCORE và bảo mật (slide 2--10).
+\item \textbf{Nguyễn Đắc Cử}, \emph{Chapter 8: Bài tập lớn/Tiểu luận thiết kế hệ thống IoT}, 24 trang PDF: các bước thiết kế, chọn giao thức mạng và truyền dữ liệu riêng biệt (slide 8--17).
+\item \textbf{Q. F. Hassan} (ed.), \emph{Internet of Things A to Z: Technologies and Applications}, Wiley/IEEE Press, 2018, chương 1 và 3: khái niệm, kiến trúc IoT, công nghệ và data exchange.
+\item \textbf{A. McEwen, H. Cassimally}, \emph{Designing the Internet of Things}, Wiley, 2014, chương 3 và 5: TCP/IP, UDP, HTTP và nền tảng nhúng.
+\item \textbf{A. James, A. Seth, S. C. Mukhopadhyay}, \emph{IoT System Design: Project Based Approach}, Springer (copyright 2022; tên tệp người dùng ghi 2021), chương 1--3 và 6--8: khối hệ thống, nút IoT và Wi-Fi/BLE/LoRaWAN.
+\end{enumerate}
+\textbf{Lưu ý nguồn:} Định nghĩa, tên lớp SoA, cấu trúc bài giảng và các hàng có ghi ``slide'' là bám tài liệu giảng viên. Các khái niệm có ghi ``bổ sung'', các mức tốc độ NB-IoT/LTE-M, phân biệt MPU--MCU chi tiết và HTTP/3 được thêm để giải thích kỹ thuật, \textbf{không coi là trích dẫn từ slide}. Không dùng những dự báo lịch sử của slide như số liệu chắc chắn hiện nay.
+\end{document}
