@@ -11,6 +11,16 @@ on:
       - 'latex/**'
       - 'chapters/**'
       - '.github/workflows/build-pdf.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'main.tex'
+      - 'preamble.tex'
+      - 'hardware_macros.tex'
+      - 'hardware_only.tex'
+      - 'latex/**'
+      - 'chapters/**'
+      - '.github/workflows/build-pdf.yml'
   workflow_dispatch:
 
 permissions:
@@ -45,6 +55,7 @@ jobs:
             cp build/standalone_${i}.pdf pdf/chuong_${i}.pdf
           done
       - name: Commit generated PDFs
+        if: github.event_name == 'push'
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
