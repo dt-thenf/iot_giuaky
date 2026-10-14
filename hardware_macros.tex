@@ -1,0 +1,17 @@
+
+% Additional style definitions for Hardware chapters 4--6.
+% Keeps existing chapter 1--3 notation and preamble unchanged.
+\colorlet{blueiot}{navy}
+\colorlet{tealiot}{teal}
+\colorlet{paleblue}{lightblue}
+\colorlet{paleteal}{softmint}
+\usepackage{listings}
+\lstset{basicstyle=\ttfamily\footnotesize,breaklines=true,frame=single,
+framerule=.3pt,rulecolor=\color{navy!40},backgroundcolor=\color{lightblue},
+numbers=left,numberstyle=\tiny\color{navy!65},numbersep=7pt,tabsize=2,
+showstringspaces=false,keepspaces=true,xleftmargin=4mm,framexleftmargin=4mm}
+\newtcolorbox{tipbox}{breakable,colback=softmint,colframe=teal!70,
+arc=1mm,boxrule=.65pt,left=3mm,right=3mm,top=2mm,bottom=2mm}
+\newcommand{\sourcepages}[1]{\par\noindent{
+\footnotesize\color{teal}\textit{Theo Chapter 2: IoT Hardware, slide PDF #1.}}\par}
+\newcommand{\hwterm}[2]{\textbf{#1} (\textit{#2})}
