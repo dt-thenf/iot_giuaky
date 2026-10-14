@@ -22,7 +22,7 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq \
-            texlive-luatex texlive-latex-extra texlive-lang-european \
+            texlive-luatex texlive-latex-extra texlive-lang-european texlive-lang-other \
             texlive-pictures texlive-fonts-recommended latexmk \
             fonts-noto-core fonts-dejavu-core
       - name: Compile master and each chapter
