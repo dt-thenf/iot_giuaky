@@ -1,0 +1,81 @@
+\section{Giao tiếp trong IoT (Communications in IoT)}
+\subsection{Khái niệm và vai trò}
+Internet of Things (IoT) là tập hợp các thực thể vật lý có cảm biến, bộ xử lý, phần mềm và khả năng kết nối để thu nhận, truyền, nhận dữ liệu và tác động lên môi trường. Một giải pháp IoT thường gồm \,\emph{thiết bị đầu cuối} (end device), \emph{liên kết truyền thông}, \emph{gateway/broker}, \emph{dịch vụ xử lý} và \emph{giao diện người dùng}. Thiết bị có thể hoạt động tự động không cần tương tác con người ở mỗi lần truyền dữ liệu. Không phải mọi giao tiếp cảm biến đều trực tiếp đi ra Internet: thiết bị dùng BLE, Zigbee hoặc RF có thể gửi qua gateway.\srcslide{2--3}
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[>=Latex,node distance=7mm and 7mm,font=\footnotesize]
+\node[draw,rounded corners,fill=pale,minimum width=25mm,minimum height=13mm] (s) {Cảm biến};
+\node[draw,rounded corners,fill=pale,right=of s,minimum width=25mm,minimum height=13mm] (m) {Vi điều khiển};
+\node[draw,rounded corners,fill=pale,right=of m,minimum width=25mm,minimum height=13mm] (g) {Gateway};
+\node[draw,rounded corners,fill=blue!10,right=of g,minimum width=25mm,minimum height=13mm] (c) {Cloud/Broker};
+\draw[->,thick,blue] (s)--(m); \draw[->,thick,blue] (m)--node[above]{BLE/RF}(g); \draw[<->,thick,blue] (g)--node[above]{IP}(c);
+\node[draw,rounded corners,fill=accent!12,below=10mm of c,minimum width=25mm,minimum height=12mm] (u) {Ứng dụng};
+\draw[<->,thick] (c)--(u);
+\node[draw,rounded corners,fill=accent!12,below=10mm of m,minimum width=25mm,minimum height=12mm] (a) {Cơ cấu chấp hành};
+\draw[->,thick] (m)--(a);
+\end{tikzpicture}
+\caption{Sơ đồ tham khảo một luồng dữ liệu IoT từ cảm biến đến ứng dụng và điều khiển ngược.}
+\end{figure}
+\subsection{Bốn kiểu giao tiếp}
+\begin{description}[style=nextline,leftmargin=6mm]
+\item[Human-to-Machine (H2M) — Người đến máy.] Người cung cấp lệnh qua tiếng nói, văn bản, hình ảnh, nút bấm; thiết bị phân tích và hành động. Ví dụ: điều khiển loa thông minh bằng giọng nói, xác thực vân tay, điểm danh khuôn mặt. Đầu vào thuộc về con người, hệ thống là bên tiếp nhận.
+\item[Machine-to-Machine (M2M) — Máy đến máy.] Hai hoặc nhiều máy tự trao đổi dữ liệu/lệnh không cần người thao tác trong từng giao dịch; có thể truyền có dây hoặc vô tuyến. Ví dụ: máy bán hàng báo hết hàng cho hệ thống hậu cần, đồng hồ điện báo chỉ số, máy giặt gửi trạng thái. IoT kế thừa M2M nhưng có thể mở rộng tới hệ sinh thái dịch vụ và cloud.
+\item[Machine-to-Human (M2H) — Máy đến người.] Thiết bị chủ động thông báo bằng còi, đèn, tin nhắn, âm thanh, hình ảnh. Ví dụ: báo cháy, đèn giao thông và thiết bị theo dõi sức khỏe cảnh báo bất thường.
+\item[Human-to-Human (H2H) — Người đến người.] Người trao đổi thông tin để phối hợp điều hành, xử lý bất thường hoặc quyết định. Trong hệ thống IoT, báo cáo từ máy có thể dẫn đến sự phối hợp giữa kỹ thuật viên, nhân viên giám sát và người vận hành.
+\end{description}
+\srcslide{3--7}
+\begin{table}[htbp]\centering\small
+\caption{Đối chiếu các dạng giao tiếp theo hướng phát động}
+\begin{tabularx}{\textwidth}{@{}p{15mm}X X@{}}\toprule
+\textbf{Loại} & \textbf{Ai khởi tạo thông tin?} & \textbf{Ví dụ}\tabularnewline\midrule
+H2M & Con người phát lệnh cho thiết bị & Ra lệnh bật đèn bằng giọng nói\\
+M2M & Thiết bị tự trao đổi với thiết bị/dịch vụ & Đồng hồ điện truyền số đọc\\
+M2H & Thiết bị chủ động cảnh báo cho người & Cảnh báo khói từ cảm biến\\
+H2H & Con người trao đổi để phối hợp & Kỹ thuật viên xử lý cảnh báo\\\bottomrule
+\end{tabularx}
+\end{table}
+\section{Định danh, đặt tên và địa chỉ (Identification and Addressing)}
+\subsection{Phân biệt định danh, tên và địa chỉ}
+\term{Định danh} (identifier) nhằm nhận biết một đối tượng; \term{tên} (name) biểu diễn đối tượng trong không gian tên; \term{địa chỉ} (address) giúp tìm vị trí hoặc định tuyến liên lạc đến giao diện mạng. Một thiết bị có thể có serial, MAC, địa chỉ IP và URI cùng lúc. Địa chỉ IP không tự thay thế cơ chế xác thực thiết bị; biết định danh cũng không chứng minh một nút đáng tin cậy.\srcslide{9--10}
+\begin{itemize}
+\item \term{URI (Uniform Resource Identifier):} định danh tài nguyên; ví dụ \texttt{https://example.com/temperature/actual} biểu diễn tài nguyên nhiệt độ. URL là một loại URI chứa cách truy cập.
+\item \term{EPC (Electronic Product Code):} mã nhận diện sản phẩm, hay dùng với nhãn RFID, ví dụ \texttt{urn:epc:id:sgtin:0614141.012345.62852}.
+\item \term{uCode:} hệ thống mã nhận diện đối tượng, xuất hiện trong slide như một phương án đặt tên khác.
+\item \term{MAC address:} định danh giao diện trong nhiều mạng lớp liên kết; \term{IP address:} địa chỉ lớp mạng, có thể thay đổi theo cấu hình mạng.
+\end{itemize}
+\subsection{IPv4: địa chỉ 32 bit}
+IPv4 dùng \(32\) bit, chia thành bốn octet (8 bit) dạng thập phân có dấu chấm: \texttt{192.168.1.10}. Số tổ hợp lý thuyết \(2^{32}=4\,294\,967\,296\); không phải tất cả đều là địa chỉ công cộng có thể cấp cho host. CIDR \texttt{/24} chỉ 24 bit mạng, còn 8 bit host. Với mạng \texttt{192.168.1.0/24}, địa chỉ mạng là \texttt{.0} và broadcast là \texttt{.255}; cấu hình phổ biến dùng \texttt{.1} tới \texttt{.254} cho host.\srcslide{11}
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[font=\footnotesize]
+\foreach \x/\v/\b in {0/192/11000000,1/168/10101000,2/1/00000001,3/10/00001010}{
+\node[draw,minimum width=31mm,minimum height=9mm,fill=blue!10] at (\x*3.15,0) {\texttt{\v}};
+\node[draw,minimum width=31mm,minimum height=9mm] at (\x*3.15,-1.15) {\texttt{\b}};
+\draw[->] (\x*3.15,-.45)--(\x*3.15,-.7);
+}
+\node[anchor=east] at (-1.65,0) {Thập phân}; \node[anchor=east] at (-1.65,-1.15) {Nhị phân};
+\end{tikzpicture}\caption{Địa chỉ IPv4 gồm bốn trường 8 bit (hình tự dựng).}
+\end{figure}
+\subsection{IPv6: địa chỉ 128 bit}
+IPv6 dùng \(128\) bit, biểu diễn bằng tám nhóm 16 bit dạng hệ 16, ngăn bởi dấu hai chấm. Ví dụ \texttt{2001:0db8:00a0:fe01:0000:0000:0000:0001} có thể viết ngắn \texttt{2001:db8:a0:fe01::1}. Ký hiệu \texttt{::} thay một chuỗi nhóm 0 liên tiếp, chỉ dùng tối đa một lần trong một địa chỉ. Không gian địa chỉ lý thuyết bằng \(2^{128}\approx3.4\times10^{38}\). Tự cấu hình SLAAC và định tuyến phân cấp làm IPv6 hữu ích với IoT quy mô lớn.\srcslide{12--16}
+\begin{table}[htbp]\centering\small\caption{IPv4 so với IPv6 theo các đặc trưng cơ bản}
+\begin{tabularx}{\textwidth}{@{}p{33mm}X X@{}}\toprule
+\textbf{Tiêu chí}&\textbf{IPv4}&\textbf{IPv6}\\\midrule
+Độ dài & 32 bit & 128 bit\\
+Biểu diễn & 4 số thập phân & 8 nhóm hệ 16\\
+Tự cấu hình & DHCPv4 hoặc thủ công & SLAAC, DHCPv6 hoặc thủ công\\
+Quảng bá & Có broadcast & Không có broadcast IP, dùng multicast\\
+Mạng IoT hạn chế & Có thể dùng qua gateway & Có thể dùng với 6LoWPAN để nén header\\\bottomrule
+\end{tabularx}
+\end{table}
+\begin{note}
+Slide nêu \emph{IPv6 mặc định an toàn hơn IPv4} và \emph{gửi gói lớn giúp tiết kiệm băng thông}. Đây không phải tính chất bảo mật hay tốc độ được đảm bảo tự động. IPv6 có hỗ trợ IPsec trong bộ giao thức, nhưng triển khai bảo mật phụ thuộc cấu hình thực tế; hiệu suất còn tùy MTU, overhead, đường truyền và cơ chế ứng dụng. Cần phân biệt ưu điểm của không gian địa chỉ với tính năng bảo mật của giao thức đi kèm.
+\end{note}
+\subsection{Mô hình phân tầng giao thức}
+Kết nối vật lý (radio, cáp, quang) không đồng nghĩa với giao thức ứng dụng (HTTP, MQTT). Một gói MQTT điển hình có thể đặt trên TCP/IP qua Wi-Fi/Ethernet/cellular, còn CoAP thường hoạt động trên UDP/IP. Gateway chuyển tiếp giữa một mạng phi IP ở thiết bị với mạng IP ở phía server.\srcslide{8, 17, 55--59}
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[font=\small]
+\foreach \y/\a/\b in {3/{Ứng dụng}/{HTTP, MQTT, CoAP, WebSocket},2/{Truyền tải}/{TCP, UDP; TLS/DTLS},1/{Mạng}/{IPv4, IPv6, RPL},0/{Liên kết/Vật lý}/{Wi-Fi, Ethernet, BLE, Zigbee, LoRa}} {
+\node[draw,fill=blue!10,minimum width=37mm,minimum height=10mm] at (0,\y*.92) {\a};
+\node[draw,fill=white,minimum width=91mm,minimum height=10mm] at (6.8,\y*.92) {\b};
+}
+\end{tikzpicture}\caption{Góc nhìn phân lớp để tránh nhầm công nghệ kết nối và giao thức dữ liệu.}
+\end{figure}

@@ -1,0 +1,35 @@
+name: Build networking chapter PDF
+on:
+  push:
+    branches: [main]
+    paths: ['networking_ch03/**', '.github/workflows/networking-ch03.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install TeX Live packages and fonts
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-luatex texlive-latex-extra texlive-lang-other texlive-fonts-recommended latexmk fonts-noto-core fonts-dejavu-core
+      - name: Compile Vietnamese PDF
+        working-directory: networking_ch03
+        run: latexmk -lualatex -interaction=nonstopmode -halt-on-error -file-line-error main.tex
+      - uses: actions/upload-artifact@v4
+        with:
+          name: networking-ch03-pdf
+          path: networking_ch03/main.pdf
+      - name: Publish PDF to repository
+        run: |
+          mkdir -p networking_ch03/pdf
+          cp networking_ch03/main.pdf networking_ch03/pdf/networking_ch03.pdf
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add networking_ch03/pdf/networking_ch03.pdf
+          if ! git diff --cached --quiet; then
+            git commit -m "docs: publish networking chapter 3 PDF"
+            git push
+          fi

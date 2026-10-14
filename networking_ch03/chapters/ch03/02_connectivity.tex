@@ -1,0 +1,75 @@
+\section{Các công nghệ truyền thông trong IoT}
+\subsection{Tiêu chí lựa chọn}
+Không có chuẩn vô tuyến nào tối ưu đồng thời về \textbf{phạm vi}, \textbf{thông lượng}, \textbf{mức tiêu thụ điện}, \textbf{độ trễ}, \textbf{chi phí}, \textbf{khả năng xuyên vật cản}, \textbf{độ tin cậy} và \textbf{hạ tầng}. Cần phân biệt \emph{tốc độ PHY} với \emph{thông lượng ứng dụng}, khoảng cách quảng cáo với khoảng cách thực địa. Các khoảng cách và bit rate trong slide 41 chỉ là minh họa, không phải cam kết cho mọi cấu hình.\srcslide{8, 18--41}
+\subsection{Truyền thông trên đường dây điện: PLC và X10}
+\term{PLC (Power-Line Communication)} truyền tín hiệu dữ liệu trên hệ thống dây cấp điện. Vì thiết bị cố định đã được nối lưới điện, PLC giảm nhu cầu đi thêm dây mạng và có thể hữu ích tại công trình nhiều nhiễu RF hoặc hệ thống điện thông minh. Tuy nhiên chất lượng phụ thuộc tải, lọc nhiễu, topology, bộ biến áp và chuẩn PLC cụ thể. \term{X10} là công nghệ điều khiển nhà thông minh đời đầu dùng xung tín hiệu gần điểm qua không trên đường điện; có tốc độ rất thấp và ít chức năng bảo mật/ACK.\srcslide{18--20}
+\begin{table}[htbp]\centering\small\caption{Thông số X10 được nêu trong bài giảng (slide 20)}
+\begin{tabularx}{\textwidth}{@{}p{45mm}X@{}}\toprule
+Đặc điểm & Thông tin trong slide\\\midrule
+Môi trường & Powerline\\
+Điều chế & OOK, sóng mang 120 kHz\\
+Tốc độ & 120 bps tức thời; 60 bps liên tục; 24 bps payload (cách diễn đạt của slide)\\
+Địa chỉ & 16 house code (A--P) \(\times\) 16 unit code (1--16) = 256 tổ hợp\\
+Lệnh & ON, OFF, DIM, BRIGHT, ALL UNITS OFF, v.v.\\
+Bảo mật/ACK & Slide ghi không hỗ trợ\\\bottomrule
+\end{tabularx}
+\end{table}
+\begin{note}Bảng nguồn có câu ``100 bits (8.5 bytes)'' về độ dài thông điệp. Hai số này mâu thuẫn vì \(100/8=12.5\) byte. Tài liệu không sử dụng chúng như một phép quy đổi chính xác, cần đối chiếu đặc tả định dạng frame cụ thể.\end{note}
+\subsection{NFC và UWB}
+\term{NFC (Near-Field Communication)} cho phép trao đổi ở cự ly rất ngắn, điển hình vài cm, dùng sóng mang \(13.56\,\mathrm{MHz}\). Theo slide có các tốc độ 106, 212, 424 kbps; các chế độ reader/writer, card emulation và peer-to-peer. Ứng dụng: thanh toán, vé/khóa điện tử, nhận dạng thiết bị, ghép nối ban đầu. Cần lưu ý ``NFC không phải RFID'' là cách diễn đạt giản lược: NFC kế thừa các họ chuẩn RFID tần số cao nhưng mở rộng phương thức giao tiếp chủ động.
+\term{UWB (Ultra-Wideband)} dùng tín hiệu trải trên băng tần rất rộng, có thể ứng dụng xác định khoảng cách/thời gian lan truyền và định vị tài sản trong nhà. Đặc trưng là độ phân giải thời gian cao; chất lượng đo vẫn phụ thuộc cấu hình kênh, vật cản, NLOS và đồng bộ. UWB không phải lựa chọn mặc định cho các cảm biến định kỳ chỉ gửi dữ liệu nhỏ.\srcslide{21--23}
+\subsection{Wi-Fi, Wi-Fi Direct và Wi-Fi HaLow}
+\term{Wi-Fi} (IEEE 802.11) thích hợp thiết bị dùng nguồn ổn định, yêu cầu tải IP trực tiếp hoặc dữ liệu lớn; phổ biến ở 2.4/5 GHz tùy chuẩn, có phiên bản băng tần khác. Wi-Fi Direct tạo liên kết trực tiếp giữa thiết bị mà không bắt buộc dùng access point truyền thống. Đánh đổi phổ biến của Wi-Fi là dòng tiêu thụ khi phát và thời gian kết nối lại. \term{Wi-Fi HaLow} (802.11ah) dùng phổ dưới 1 GHz, nhắm mục tiêu phạm vi xa và tiết kiệm năng lượng hơn trong một số cấu hình cảm biến; cần thiết bị/hạ tầng tương thích, không nên mặc định mọi Wi-Fi là HaLow.\srcslide{24--25}
+\subsection{Bluetooth Low Energy (BLE)}
+\term{BLE} tạo mạng cá nhân công suất thấp (PAN), phù hợp wearable, beacon, cảm biến ở gần điện thoại hoặc gateway. BLE phân biệt \emph{advertising/scanning} với \emph{connected mode}, và mô hình dịch vụ GATT/attribute. Chu kỳ quảng bá, connection interval, MTU, PHY, công suất phát và cơ chế sleep quyết định năng lượng. BLE không trực tiếp mang IP trong mô hình triển khai thường gặp; điện thoại hoặc gateway có thể chuyển dữ liệu lên backend. Bảng so sánh Bluetooth Classic và BLE ở slide 27 thuộc một số cấu hình thế hệ trước, không phải giới hạn chung của mọi phiên bản BLE hiện nay.\srcslide{26--27}
+\begin{keybox}
+Với cảm biến chạy pin, cần xét \emph{năng lượng trung bình} thay vì chỉ dòng phát cực đại: \[I_{\mathrm{avg}}\approx\sum_{k=1}^{n}I_k\frac{t_k}{T},\qquad T_{\mathrm{pin}}\approx\frac{C_{\mathrm{hữu\ dụng}}}{I_{\mathrm{avg}}}.\]
+Các ước lượng trên bỏ qua nhiệt độ, tự xả, suy giảm pin và hiệu suất chuyển đổi nguồn; dùng để hiểu xu hướng, không phải tính tuổi thọ chính xác.
+\end{keybox}
+\subsection{Zigbee và mạng mesh IEEE 802.15.4}
+\term{Zigbee} hỗ trợ các cấu trúc \emph{star}, \emph{tree} và \emph{mesh}, tiêu thụ thấp, có cơ chế bảo mật AES-128, tránh va chạm, ACK và thử truyền lại tùy tầng. Mạng có \emph{coordinator}, \emph{router} chuyển tiếp và \emph{end device}; thiết bị cuối có thể ngủ để tiết kiệm điện. Slide ghi khả năng khoảng 65.000 nút: đây là trần lý thuyết của một không gian địa chỉ, không đồng nghĩa một mạng thực tế có thể phục vụ số nút đó với độ trễ và thông lượng thỏa mãn.\srcslide{28--30}
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[every node/.style={circle,draw=navy,minimum size=6mm,inner sep=1pt},line width=.7pt]
+\node[fill=accent!50] (c) at (0,0) {C};
+\node[fill=blue!30] (r1) at (-2,1) {R};\node[fill=blue!30] (r2) at (2,1) {R};\node[fill=blue!30] (r3) at (0,2) {R};
+\node[fill=pale] (e1) at (-3,2.1) {E};\node[fill=pale] (e2) at (-1.9,2.6) {E};\node[fill=pale] (e3) at (3,2.0) {E};\node[fill=pale] (e4) at (1,3) {E};
+\draw (c)--(r1)--(r3)--(r2)--(c) (r1)--(r2) (r1)--(e1) (r1)--(e2) (r2)--(e3) (r3)--(e4);
+\node[draw=none,rectangle,anchor=west] at (4.2,2.1) {C: Coordinator};
+\node[draw=none,rectangle,anchor=west] at (4.2,1.5) {R: Router};
+\node[draw=none,rectangle,anchor=west] at (4.2,.9) {E: End device};
+\end{tikzpicture}\caption{Minh họa mesh Zigbee: router có thể chuyển tiếp qua nhiều chặng.}
+\end{figure}
+\subsection{Z-Wave}
+\term{Z-Wave} chủ yếu dùng trong tự động hóa nhà ở: công tắc, khóa cửa, cảm biến an ninh, bộ điều khiển. Bài giảng nêu các dải xấp xỉ 868.42 MHz (châu Âu) và 908.42 MHz (Hoa Kỳ), một số mức dữ liệu 9.6/40/200 kbps và khoảng cách vài chục mét trong nhà. Băng tần cụ thể phụ thuộc thị trường, phiên bản và quy định quản lý phổ; không có một tần số hợp pháp chung toàn thế giới.\srcslide{31}
+\subsection{LPWAN không dùng mạng di động: Weightless, Sigfox và LoRaWAN}
+\term{Weightless} là họ tiêu chuẩn LPWAN gồm các biến thể W, P và N, khác nhau về phổ tần, hướng truyền và bài toán triển khai. Weightless-W nhắc đến TV white space; Weightless-P hướng tới hai chiều và mạng riêng. Khả năng thương mại/độ phổ biến thực tế phải được kiểm tra theo địa bàn.
+\term{Sigfox} là một hệ sinh thái LPWAN phục vụ gói dữ liệu nhỏ, không thường xuyên và ưu tiên pin lâu. Kết nối phụ thuộc vùng có mạng và mô hình dịch vụ. Không thích hợp luồng video hoặc dữ liệu điều khiển thời gian thực dung lượng cao.
+\term{LoRa} là kỹ thuật điều chế/vật lý vô tuyến tầm xa, còn \term{LoRaWAN} là giao thức mạng/MAC, quản lý thiết bị và hạ tầng gateway/network server trên LoRa. LoRaWAN hỗ trợ cấu hình lớp thiết bị A/B/C (đánh đổi năng lượng và độ trễ downlink), trao đổi hai chiều và cơ chế khóa bảo vệ mạng/ứng dụng. Băng thông thấp, giới hạn airtime và duty-cycle tùy khu vực là các ràng buộc thiết kế.\srcslide{32--34}
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[>=Latex,font=\footnotesize,node distance=12mm and 12mm]
+\node[draw,rounded corners,fill=pale] (e1) {Node LoRa A};
+\node[draw,rounded corners,fill=pale,below=9mm of e1] (e2) {Node LoRa B};
+\node[draw,rounded corners,fill=blue!15,right=27mm of e1,yshift=-5mm] (gw) {Gateway};
+\node[draw,rounded corners,fill=blue!15,right=of gw] (ns) {Network server};
+\node[draw,rounded corners,fill=accent!15,right=of ns] (app) {Ứng dụng};
+\draw[->,thick] (e1)--(gw);\draw[->,thick] (e2)--(gw);\draw[<->,thick] (gw)--node[above]{IP}(ns);\draw[<->,thick] (ns)--(app);
+\end{tikzpicture}\caption{Phân biệt liên kết vô tuyến LoRa với kiến trúc mạng LoRaWAN.}
+\end{figure}
+\subsection{Li-Fi, mạng di động, 5G, LTE-M và NB-IoT}
+\term{Li-Fi} truyền dữ liệu bằng ánh sáng (ví dụ LED), phù hợp một số không gian giới hạn. Vật chắn/ánh sáng môi trường và yêu cầu bố trí thu phát ảnh hưởng mạnh đến kết nối; không phải mọi hệ thống Li-Fi đều cần đường nhìn thẳng tuyệt đối, nhưng không truyền xuyên tường như sóng RF điển hình.
+\term{Cellular} gồm các thế hệ 3G/4G/LTE/5G, dùng hạ tầng trạm gốc và lõi mạng nhà cung cấp, thuận tiện cho thiết bị di động, triển khai diện rộng. Thiết bị cần SIM/eSIM theo hệ thống mạng, thường có chi phí thuê bao và dòng đỉnh khi phát đáng chú ý. \term{5G} hỗ trợ nhiều kịch bản từ băng rộng di động đến IoT công nghiệp; các đặc trưng thực tế phụ thuộc băng tần, cấu hình mạng và vùng phủ.
+\term{LTE-M (Cat-M1)} là công nghệ 3GPP LPWAN trên LTE, cân bằng di động, dữ liệu và pin, có thể thích hợp theo dõi tài sản. \term{NB-IoT} tối ưu cho dữ liệu nhỏ, phủ sâu và tiêu thụ thấp ở thiết bị ít dịch chuyển; độ trễ và mức hỗ trợ chuyển vùng/mobility tùy mạng. Phát biểu ``pin trên 10 năm'' chỉ đúng với chế độ ngủ, chu kỳ truyền, dung lượng pin và vùng phủ phù hợp, không phải tuổi thọ mặc định.\srcslide{35--40}
+\begin{table}[htbp]\centering\small
+\caption{Ma trận định tính để lựa chọn công nghệ (tổng hợp từ slide; mang tính định hướng)}
+\begin{tabularx}{\textwidth}{@{}p{24mm}p{25mm}p{25mm}X@{}}\toprule
+Công nghệ & Phạm vi điển hình & Năng lượng & Trường hợp sử dụng\\\midrule
+NFC & Cực gần & Nhỏ cho thẻ thụ động & Chạm thẻ, mở khóa\\
+BLE & Gần & Thấp nếu tối ưu sleep & Đồng hồ, wearable\\
+Wi-Fi & LAN & Trung bình/cao & Camera, gateway, thiết bị có nguồn\\
+Zigbee & PAN/mesh & Thấp & Cảm biến nhà thông minh\\
+LoRaWAN & Xa & Thấp, tốc độ nhỏ & Đồng hồ, nông nghiệp\\
+LTE-M & Diện rộng & Tùy mạng/duty cycle & Thiết bị di động có SIM\\
+NB-IoT & Diện rộng & Thấp với chu kỳ thưa & Công tơ cố định, cảnh báo\\
+UWB & Gần & Tùy chế độ & Đo khoảng cách, indoor tracking\\\bottomrule
+\end{tabularx}
+\end{table}
