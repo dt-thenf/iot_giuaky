@@ -1,52 +1,63 @@
-# Tổng hợp kiến thức IoT (LuaLaTeX, tiếng Việt)
+# Cơ sở và thiết kế hệ thống IoT — tài liệu LuaLaTeX theo chương gốc
 
-Bộ tài liệu phục vụ học phần **Cơ sở và thiết kế hệ thống IoT**. Hiện có **hai bài giảng**: `Chapter 1: An overview of IoT` (50 trang) và `Chapter 2: IoT Hardware` (79 trang). Mỗi bài giảng được biên soạn thành **ba chương độc lập**, tổng cộng **sáu chương**. Số chương trong repo là quy ước tự quản lý, không phải số chương gốc của giảng viên.
+**Quy tắc:** một bài giảng `Chapter N` của giảng viên tương ứng đúng **một chương N** trong tài liệu. Các tệp con được tách để quản lý **mục kiến thức**, không được đặt thành chương mới.
 
-| Chương | Tệp nguồn | Chủ đề chính | Trang bài giảng nguồn (trang PDF) |
-|---|---|---|---|
-| 1 | `chapters/chuong_01.tex` | Khái niệm, nguồn gốc, smart object, smart environment, M2M/IIoT | 3, 5–22 |
-| 2 | `chapters/chuong_02.tex` | Nút IoT, gateway, cloud, service, UI, kiến trúc 3–7 lớp | 23–41 |
-| 3 | `chapters/chuong_03.tex` | Các miền ứng dụng, case study, cơ hội và thách thức | 42–49 (Chapter 1) |
-| 4 | `chapters/chuong_04.tex` | Cảm biến: phân loại, analog/digital, ADC, bus, node IoT | 3–12, 16–17 (Chapter 2) |
-| 5 | `chapters/chuong_05.tex` | Cơ cấu chấp hành: sensor vs actuator, motor/LED, PWM, driver | 13–15 (Chapter 2) |
-| 6 | `chapters/chuong_06.tex` | MCU/SBC: ATmega, Arduino, ESP8266/ESP32, Edison, Edge, Raspberry Pi | 18–78 (Chapter 2) |
+Hiện repo đã có hai bài giảng: **Chapter 1 — An overview of IoT** (50 trang) và **Chapter 2 — IoT Hardware** (79 trang). Tài liệu của TS. Nguyễn Đắc Cử, Khoa Điện – Điện tử, Trường Đại học Phenikaa.
 
-## Tài liệu PDF và biên dịch
+## Cấu trúc
 
-- `pdf/iot_tong_hop_6_chuong.pdf`: bản ghép sáu chương từ cả hai bài giảng (tạo bởi GitHub Actions).
-- `pdf/iot_hardware_3_chuong.pdf`: tài liệu riêng cho ba chương phần cứng, với trang bìa và mục lục riêng.
-- `pdf/chuong_01.pdf` ... `pdf/chuong_06.pdf`: bản PDF độc lập từng chương.
+```text
+main.tex                            # Ghép toàn bộ: Chương 1 + Chương 2
+preamble.tex                        # Kiểu chữ, tiếng Việt, TikZ
+hardware_macros.tex                 # Macro kỹ thuật cho chương phần cứng
+hardware_only.tex                   # PDF riêng Chương 2 có bìa
+chapters/
+  chuong_01.tex                     # Chương 1: Tổng quan về IoT
+  chuong_01/
+    01_lich_su_khai_niem.tex        # Các mục 1.x: lịch sử, khái niệm, M2M/IIoT
+    02_kien_truc_iot.tex            # Các mục 1.x: thành phần, mô hình 3–7 lớp
+    03_ung_dung_thach_thuc.tex       # Các mục 1.x: ứng dụng, cơ hội, thách thức
+  chuong_02.tex                     # Chương 2: Phần cứng IoT
+  chuong_02/
+    01_cam_bien.tex                 # Các mục 2.x: sensors
+    02_co_cau_chap_hanh.tex         # Các mục 2.x: actuators
+    03_vi_dieu_khien.tex            # Các mục 2.x: MCU, Arduino, ESP, Raspberry Pi
+  standalone_01.tex                 # Biên dịch riêng Chương 1
+  standalone_02.tex                 # Biên dịch riêng Chương 2
+pdf/                                 # PDF do GitHub Actions tạo tự động
+```
 
-## Biên dịch
+## Tài liệu và phạm vi
 
-Cần TeX Live có `lualatex`, `fontspec`, `babel`, `tikz`, `tcolorbox`, font Noto Serif/Noto Sans. Ở thư mục gốc:
+| Chương gốc | Nội dung được giữ trong cùng chương |
+|---|---|
+| 1 – Tổng quan về IoT | Khái niệm IoT; lịch sử; Smart Object/Smart Environment; M2M, IIoT, Industry 4.0; Things/Gateway/Cloud/Services/UI; kiến trúc IoT 3–7 lớp; ứng dụng, cơ hội và thách thức |
+| 2 – IoT Hardware | Cảm biến; cơ cấu chấp hành; vi điều khiển/vi xử lý, ATmega, Arduino, ESP8266/ESP32, Intel Edison, Raspberry Pi; ví dụ thiết kế |
+
+Các phần mở rộng kiến thức, hình vẽ TikZ, ví dụ và câu hỏi ôn tập được biên soạn bổ trợ, không phải trích nguyên văn từ slide. Sách đối chiếu: Hassan (2018), McEwen & Cassimally (2014), James, Seth & Mukhopadhyay (2022).
+
+## PDF
+
+- `pdf/iot_tong_hop_2_chuong.pdf`: Chương 1 + Chương 2.
+- `pdf/chuong_01.pdf`: riêng Chương 1.
+- `pdf/chuong_02.pdf`: riêng Chương 2.
+- `pdf/iot_hardware_chuong_02.pdf`: Chương 2, bản chuyên đề phần cứng có bìa.
+
+**Các bản cũ `iot_tong_hop_6_chuong.pdf`, `iot_hardware_3_chuong.pdf`, `chuong_03.pdf` đến `chuong_06.pdf` bị đánh số sai và được xóa khi biên dịch lại.**
+
+## Biên dịch bằng LuaLaTeX
+
+Cài đặt `latexmk`, LuaLaTeX, `fontspec`, `babel`, `tikz`, `tcolorbox`, `listings`, phông Noto Serif, Noto Sans, DejaVu Sans Mono.
 
 ```bash
 latexmk -lualatex -interaction=nonstopmode -halt-on-error -outdir=build main.tex
-```
-
-PDF kết quả: `build/main.pdf`. Có ba wrapper biên dịch độc lập:
-
-```bash
 latexmk -lualatex -interaction=nonstopmode -halt-on-error -outdir=build chapters/standalone_01.tex
 latexmk -lualatex -interaction=nonstopmode -halt-on-error -outdir=build chapters/standalone_02.tex
-latexmk -lualatex -interaction=nonstopmode -halt-on-error -outdir=build chapters/standalone_03.tex
+latexmk -lualatex -interaction=nonstopmode -halt-on-error -outdir=build hardware_only.tex
 ```
 
-Để biên dịch riêng phần cứng: `latexmk -lualatex -interaction=nonstopmode -halt-on-error -outdir=build hardware_only.tex`. Có sáu wrapper biên dịch độc lập `chapters/standalone_01.tex` ... `chapters/standalone_06.tex`.
+Workflow `.github/workflows/build-pdf.yml` thực hiện các lệnh trên khi cập nhật mã nguồn ở nhánh `main`, rồi commit PDF đã biên dịch.
 
-Các bản PDF đã biên dịch (nếu có) trong `pdf/`. Toàn bộ hình kiến trúc hiện viết trực tiếp bằng TikZ trong từng tệp chương, vì thế chỉnh sửa được bằng mã nguồn.
+## Thêm Chương 3 và các chương sau
 
-## Bổ sung chương tiếp theo
-
-1. Tạo `chapters/chuong_07.tex`, `chapters/chuong_08.tex`, `chapters/chuong_09.tex` từ nguồn mới, giữ quy ước `\chapter{...}`.
-2. Thêm `\input{chapters/chuong_07}` ... vào `main.tex` trước `\backmatter`.
-3. Nếu cần PDF độc lập, nhân bản `chapters/standalone_06.tex`, đổi tên, đổi `\setcounter{chapter}{6}` và `\input`.
-4. Chỉnh bảng phạm vi nguồn ở README; chạy lại `latexmk`.
-
-## Phân biệt nguồn
-
-- Nguồn chính: 50 trang của `Chapter 1: An overview of IoT` và 79 trang của `Chapter 2: IoT Hardware`, TS. Nguyễn Đắc Cử, Đại học Phenikaa.
-- Tham khảo tăng cường: Q. F. Hassan (2018); McEwen & Cassimally (2014); James, Seth & Mukhopadhyay (2022).
-- Mục đóng khung *Kiến thức mở rộng* được biên soạn thêm, không phải trích nguyên văn từ slide.
-- Hình vẽ TikZ tự biên soạn, không sử dụng hình bản quyền trong các tệp PDF nguồn.
+Tạo `chapters/chuong_03.tex`, chỉ đặt **một** `\chapter{...}` tương ứng bài giảng gốc. Các mục nhỏ lưu ở `chapters/chuong_03/*.tex`, được nạp bằng `\input`. Thêm một dòng `\input{chapters/chuong_03}` vào `main.tex`, cập nhật GitHub Actions và README. Tuyệt đối không đổi `\section` thành `\chapter` chỉ vì chia tệp.
