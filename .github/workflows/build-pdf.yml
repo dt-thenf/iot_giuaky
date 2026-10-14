@@ -28,27 +28,29 @@ jobs:
             texlive-luatex texlive-latex-extra texlive-lang-european texlive-lang-other \
             texlive-pictures texlive-fonts-recommended latexmk \
             fonts-noto-core fonts-dejavu-core
-      - name: Compile master and each chapter
+      - name: Compile Chapter 1, Chapter 2 and master
         run: |
           set -euo pipefail
           latexmk -lualatex -interaction=nonstopmode -halt-on-error -outdir=build main.tex
           latexmk -lualatex -interaction=nonstopmode -halt-on-error -outdir=build hardware_only.tex
-          for i in 01 02 03 04 05 06; do
+          for i in 01 02; do
             latexmk -lualatex -interaction=nonstopmode -halt-on-error -outdir=build chapters/standalone_${i}.tex
           done
           mkdir -p pdf
-          cp build/main.pdf pdf/iot_tong_hop_6_chuong.pdf
-          cp build/hardware_only.pdf pdf/iot_hardware_3_chuong.pdf
-          for i in 01 02 03 04 05 06; do
+          rm -f pdf/iot_tong_hop_3_chuong.pdf pdf/iot_tong_hop_6_chuong.pdf pdf/iot_hardware_3_chuong.pdf
+          rm -f pdf/chuong_03.pdf pdf/chuong_04.pdf pdf/chuong_05.pdf pdf/chuong_06.pdf
+          cp build/main.pdf pdf/iot_tong_hop_2_chuong.pdf
+          cp build/hardware_only.pdf pdf/iot_hardware_chuong_02.pdf
+          for i in 01 02; do
             cp build/standalone_${i}.pdf pdf/chuong_${i}.pdf
           done
       - name: Commit generated PDFs
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add pdf/*.pdf
+          git add -A pdf/
           if ! git diff --cached --quiet; then
-            git commit -m 'docs: regenerate Vietnamese IoT study PDFs'
+            git commit -m 'docs: rebuild PDFs according to original Chapter 1 and Chapter 2'
             git push
           fi
       - uses: actions/upload-artifact@v4
