@@ -9,9 +9,9 @@
 {\sffamily\Large\bfseries\color{teal} TÀI LIỆU ÔN TẬP MÔN HỌC\par}\vspace{0.6cm}
 {\sffamily\Huge\bfseries\color{navy} CƠ SỞ VÀ THIẾT KẾ\par HỆ THỐNG IoT\par}
 \vspace{0.8cm}
-{\sffamily\LARGE TỔNG HỢP KIẾN THỨC CHI TIẾT\par}
+{\sffamily\LARGE TỔNG HỢP KIẾN THỨC THEO CHƯƠNG GỐC\par}
 \vspace{0.5cm}
-{\large Sáu chương độc lập từ hai bài giảng; sơ đồ TikZ tự biên soạn\par}
+{\large Hai chương từ hai bài giảng gốc; sơ đồ TikZ tự biên soạn\par}
 \vfill
 \begin{tcolorbox}[colback=lightblue,colframe=navy,width=.91\textwidth,arc=2mm]
 \centering\large\bfseries Nguồn chính: ``Chapter 1: An overview of IoT'' và ``Chapter 2: IoT Hardware''\\
@@ -21,21 +21,28 @@
 \vfill {\sffamily\large 2026\par}
 \end{titlepage}
 \chapter*{Lời nói đầu và phạm vi biên soạn}\addcontentsline{toc}{chapter}{Lời nói đầu và phạm vi biên soạn}
-Tài liệu này \textbf{không giả định đã có bản giảng chương 2 và chương 3 riêng}. Hai tệp bài giảng được \textbf{tái tổ chức thành sáu chương học tập}. \textit{Chapter 1: An overview of IoT} (50 trang) tạo thành chương 1--3 về khái niệm, thành phần kiến trúc và ứng dụng. \textit{Chapter 2: IoT Hardware} (79 trang) tạo thành chương 4--6 về cảm biến, cơ cấu chấp hành, vi điều khiển và các nền tảng IoT. Cách phân chia chỉ nhằm học và quản lý phiên bản, không phải đánh số chương gốc của giảng viên.
+Bộ tài liệu được đánh số \textbf{đúng theo bài giảng của TS. Nguyễn Đắc Cử}:
+\textbf{Chương 1 -- An overview of IoT} (50 trang PDF) và
+\textbf{Chương 2 -- IoT Hardware} (79 trang PDF).
+\textbf{Không chia một bài giảng thành nhiều chương LaTeX.}
+Trong thư mục \texttt{chapters/chuong\_01/} và \texttt{chapters/chuong\_02/},
+mỗi tệp chỉ là một \textit{nhóm mục} của chương tương ứng.
 
-Các phần \textbf{``Kiến thức mở rộng''} được thêm để giải thích kỹ thuật, ví dụ minh họa và mối liên hệ giữa các khái niệm; không được hiểu là trích nguyên văn bài giảng. Các sơ đồ là hình \textbf{tự biên soạn bằng TikZ} từ nội dung kiến thức, không sao chép hình bản quyền của sách. Những dự báo lịch sử trong slide không được trình bày như số liệu thực tế năm 2026.
+Chương 1 gồm lịch sử và khái niệm IoT, đối tượng/môi trường thông minh,
+kiến trúc hệ thống, ứng dụng, cơ hội và thách thức.
+Chương 2 gồm cảm biến, cơ cấu chấp hành, vi điều khiển và các nền tảng phần cứng.
+Nội dung ``Kiến thức mở rộng'' được trình bày riêng nhằm làm rõ các vấn đề
+kỹ thuật, không được coi là trích nguyên văn slide gốc.
 
 \begin{notebox}
-\textbf{Mục tiêu sử dụng:} đọc lần lượt sáu chương, tự kiểm tra bằng câu hỏi cuối chương, sau đó dùng bảng đối chiếu thuật ngữ và phụ lục nguồn để ôn tập. Khi có tài liệu ba chương tiếp theo, thêm tệp vào thư mục \texttt{chapters/} và khai báo \texttt{\textbackslash input} trong \texttt{main.tex}; không phải sửa sáu chương hiện tại.
+\textbf{Nguyên tắc quản lý:} Chương 3, 4 và các chương tiếp theo
+chỉ được thêm khi tổng hợp đúng bài giảng nguồn tương ứng.
+Số chương trong PDF luôn khớp với số chương nguồn.
 \end{notebox}
 \tableofcontents
 \mainmatter
 \input{chapters/chuong_01}
 \input{chapters/chuong_02}
-\input{chapters/chuong_03}
-\input{chapters/chuong_04}
-\input{chapters/chuong_05}
-\input{chapters/chuong_06}
 \backmatter
 \chapter*{Tài liệu tham khảo và quy ước trích dẫn}\addcontentsline{toc}{chapter}{Tài liệu tham khảo và quy ước trích dẫn}
 \begin{enumerate}[label={[\arabic*]}]
@@ -43,7 +50,7 @@ Các phần \textbf{``Kiến thức mở rộng''} được thêm để giải t
 \item Qusay F. Hassan (chủ biên), \textit{Internet of Things A to Z: Technologies and Applications}, IEEE Press/Wiley, 2018. Tham khảo Chương 1 (smart object, smart environment, ICT) và Chương 3 (kiến trúc, công nghệ nền).
 \item Adrian McEwen và Hakim Cassimally, \textit{Designing the Internet of Things}, Wiley, 2014. Tham khảo Chương 1 (tư duy thiết bị kết nối) và Chương 2 (nguyên tắc thiết kế và quyền riêng tư).
 \item Alice James, Avishkar Seth và Subhas Chandra Mukhopadhyay, \textit{IoT System Design: Project Based Approach}, Springer, bản in ghi 2022. Tham khảo Chương 1 (khối chức năng IoT) và Chương 3 (cân nhắc thiết kế nút IoT).
-\item Nguyễn Đắc Cử, \textit{Cơ sở và thiết kế hệ thống IoT -- Chapter 2: IoT Hardware}, bài giảng 79 trang PDF, Đại học Phenikaa. Nguồn chính cho chương 4--6.
+\item Nguyễn Đắc Cử, \textit{Cơ sở và thiết kế hệ thống IoT -- Chapter 2: IoT Hardware}, bài giảng 79 trang PDF, Đại học Phenikaa. Nguồn chính cho Chương 2.
 \end{enumerate}
 \noindent\textbf{Quy ước:} ``Theo bài giảng'' là nội dung được diễn giải lại từ slide; ``Kiến thức mở rộng'' là giải thích bổ trợ do tài liệu này biên soạn dựa trên các sách tham khảo hoặc kiến thức kỹ thuật chung. Không dùng hình từ PDF gốc trong bản phân phối.
 \end{document}
