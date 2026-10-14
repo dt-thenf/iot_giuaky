@@ -6,6 +6,9 @@ on:
     paths:
       - 'main.tex'
       - 'preamble.tex'
+      - 'hardware_macros.tex'
+      - 'hardware_only.tex'
+      - 'latex/**'
       - 'chapters/**'
       - '.github/workflows/build-pdf.yml'
   workflow_dispatch:
@@ -29,12 +32,14 @@ jobs:
         run: |
           set -euo pipefail
           latexmk -lualatex -interaction=nonstopmode -halt-on-error -outdir=build main.tex
-          for i in 01 02 03; do
+          latexmk -lualatex -interaction=nonstopmode -halt-on-error -outdir=build hardware_only.tex
+          for i in 01 02 03 04 05 06; do
             latexmk -lualatex -interaction=nonstopmode -halt-on-error -outdir=build chapters/standalone_${i}.tex
           done
           mkdir -p pdf
-          cp build/main.pdf pdf/iot_tong_hop_3_chuong.pdf
-          for i in 01 02 03; do
+          cp build/main.pdf pdf/iot_tong_hop_6_chuong.pdf
+          cp build/hardware_only.pdf pdf/iot_hardware_3_chuong.pdf
+          for i in 01 02 03 04 05 06; do
             cp build/standalone_${i}.pdf pdf/chuong_${i}.pdf
           done
       - name: Commit generated PDFs
