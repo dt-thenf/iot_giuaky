@@ -1,0 +1,191 @@
+% Mục nội dung thuộc chương 1 của bài giảng gốc; không phải chương độc lập.
+\begin{notebox}
+\textbf{Mục tiêu:} nhận diện vai trò của Things, Gateway, Cloud, Services và giao diện người dùng; phân biệt mô hình 3, 4, 5, 6 và 7 lớp trong bài giảng; hiểu luồng dữ liệu và điều khiển hai chiều; biết lựa chọn mô hình phù hợp với yêu cầu hệ thống.
+\end{notebox}
+\section{Tư duy thiết kế theo kiến trúc tổng thể}
+\term{Kiến trúc IoT} mô tả cách các thành phần được phân nhóm, kết nối, trao đổi dữ liệu và cung cấp dịch vụ. Kiến trúc giúp trả lời: dữ liệu sinh ra ở đâu, truyền qua đường nào, xử lý tại đâu, được lưu như thế nào, ai được phép truy cập và khi nào phải thực hiện lệnh điều khiển. Các kiến trúc 3/4/5/6/7 lớp là \textbf{mô hình nhìn ở những độ chi tiết khác nhau}, không nhất thiết là năm thế hệ kế tiếp thay thế nhau.
+
+\section{Bốn khối chức năng và giao diện người dùng}
+Bài giảng giới thiệu bốn khối \textbf{Things -- Gateway/Network -- Cloud -- Services} và ngay sau đó mô tả thêm \textbf{User Interface (UI)}. Khi vẽ hệ thống, nên đặt UI như lớp tương tác bên ngoài bốn khối để không làm mất chi tiết này.
+\lecturesrc{23--28}
+
+\begin{figure}[H]\centering
+\begin{tikzpicture}[node distance=7mm and 6mm,every node/.style={font=\small}]
+\node[block,minimum width=27mm,minimum height=18mm] (thing) {Things\\Cảm biến/MCU};
+\node[block,right=of thing,minimum width=27mm,minimum height=18mm] (gateway) {Gateway\\Chuyển tiếp};
+\node[block,right=of gateway,minimum width=27mm,minimum height=18mm] (cloud) {Cloud\\Lưu trữ};
+\node[block,right=of cloud,minimum width=26mm,minimum height=18mm] (services) {Services\\Phân tích};
+\node[subblock,below=14mm of services,minimum width=26mm] (ui) {UI / Dashboard};
+\draw[arrow,<->](thing)--(gateway);\draw[arrow,<->](gateway)--(cloud);\draw[arrow,<->](cloud)--(services);\draw[arrow,<->](services)--(ui);
+\node[below=16mm of gateway,align=center,font=\scriptsize,text=navy] {Dữ liệu đo và lệnh điều khiển\,: hai chiều};
+\end{tikzpicture}\caption{Các khối chức năng của hệ thống IoT được bài giảng giới thiệu.}
+\end{figure}
+
+\subsection{Things/Devices -- thiết bị đầu cuối}
+\term{Things} có thể chứa cảm biến, cơ cấu chấp hành, bộ điều khiển hoặc bộ xử lý như MCU, MPU, PLC, FPGA, máy tính nhúng. Nhiệm vụ: đo lường, thu thập dữ liệu, tiền xử lý, thực thi logic, phản hồi lệnh và trao đổi dữ liệu. Cảm biến thường gặp: nhiệt độ, áp suất, độ ẩm, gia tốc/chuyển động, ánh sáng, mức chất lỏng, khói. Không phải mọi node đều có cả cảm biến lẫn actuator; nút đo có thể chỉ truyền, nút điều khiển có thể chỉ nhận lệnh.
+
+Bảng kiểm ban đầu của một nút: \emph{đại lượng đo, dải đo, sai số, tốc độ lấy mẫu, khả năng xử lý, bộ nhớ, nguồn, thời gian hoạt động, phương thức kết nối, vỏ bảo vệ, khả năng cập nhật và khôi phục}. Trong bản thiết kế nghiêm túc cần có thông số điện áp, công suất đỉnh, chu kỳ phát dữ liệu và trạng thái lỗi.
+\lecturesrc{24}
+
+\subsection{Gateway/Network -- cổng kết nối và liên mạng}
+Gateway tiếp nhận nhiều nút cục bộ, định tuyến hoặc chuyển tiếp thông điệp, chuyển đổi giao thức và có thể \term{tiền xử lý (pre-processing)} như lọc giá trị không hợp lệ, gộp mẫu, nén dữ liệu, bổ sung dấu thời gian. Thiết bị gateway còn có thể thực hiện kiểm tra xác thực, mã hóa hoặc quản lý truy cập, nhưng \textbf{không thể mặc định gateway tự bảo đảm toàn bộ an ninh hệ thống}. Thiết kế phải tính bảo mật thiết bị, liên kết truyền và dịch vụ đầu cuối.
+
+Ví dụ, nhiều cảm biến dùng BLE hoặc mạng vô tuyến cục bộ truyền tới Raspberry Pi; gateway dùng Ethernet/4G để chuyển dữ liệu đến máy chủ qua giao thức IP. Cần phân biệt \emph{gateway} (chuyển đổi/trung gian) và \emph{router} (định tuyến): đôi khi một thiết bị kiêm cả hai, nhưng chức năng không đồng nhất.
+\lecturesrc{25}
+
+\subsection{Cloud -- hạ tầng lưu trữ và tính toán}
+Cloud cung cấp năng lực tiếp nhận, quản lý, lưu trữ và phân tích dữ liệu từ số lượng lớn thiết bị. Những chức năng thường có: quản lý định danh và vòng đời thiết bị, máy chủ tiếp nhận, hàng đợi thông điệp, cơ sở dữ liệu chuỗi thời gian, công cụ xử lý, cảnh báo, phân quyền và giám sát hoạt động. Chia tách xử lý thời gian thực với thống kê/lưu trữ dài hạn giúp hệ thống dễ mở rộng.
+\lecturesrc{26}
+
+\subsection{Services -- dịch vụ và phân tích nghiệp vụ}
+Services chuyển dữ liệu đã thu thập thành \textbf{thông tin có thể ra quyết định}: hiển thị trạng thái; phân tích xu hướng; phát hiện bất thường; dự báo bảo trì; gửi cảnh báo; tối ưu vận hành. Cần phân biệt \term{data} (số đo) và \term{information/insight} (kết quả diễn giải): dãy giá trị nhiệt độ là dữ liệu, cảnh báo máy có nguy cơ quá nhiệt là thông tin phục vụ hành động.
+\lecturesrc{27}
+
+\subsection{User Interface (UI) -- giao diện người dùng}
+UI giúp người vận hành xem và điều khiển hệ thống: dashboard trên web, mobile app, màn hình HMI hoặc công cụ bảo trì. UI nên hiển thị thời điểm cập nhật, đơn vị đo, trạng thái liên lạc, mức cảnh báo, quyền truy cập và lịch sử thao tác. \term{Thiết kế giao diện không chỉ là hình thức}: ở IoT, UI làm rõ tình trạng thiết bị và giảm nguy cơ thao tác sai.
+\lecturesrc{28}
+
+\begin{expandbox}
+\textbf{Đường đi dữ liệu mẫu:} cảm biến áp suất $\rightarrow$ giao tiếp I\textsuperscript{2}C $\rightarrow$ MCU $\rightarrow$ gói dữ liệu $\rightarrow$ gateway $\rightarrow$ MQTT/HTTPS $\rightarrow$ cơ sở dữ liệu $\rightarrow$ dashboard. Lệnh cấu hình ngưỡng có thể đi ngược hướng về MCU. Các giao thức này là \textit{ví dụ mở rộng}; bài giảng phần kiến trúc không chỉ định một giao thức bắt buộc.
+\end{expandbox}
+
+\section{Kiến trúc 3 lớp (three-layer architecture)}
+Mô hình giản lược \textbf{Perception -- Network -- Application} là cách phân tách phổ biến để giới thiệu hệ thống.
+\begin{figure}[H]\centering
+\begin{tikzpicture}[node distance=5mm,every node/.style={font=\small}]
+\node[block,minimum width=100mm,fill=navy!7] (app) {\textbf{APPLICATION} -- ứng dụng, dịch vụ, phân tích và giao diện};
+\node[block,below=of app,minimum width=100mm,fill=teal!12] (net) {\textbf{NETWORK} -- truyền thông, router, gateway};
+\node[block,below=of net,minimum width=100mm,fill=orangeiot!12] (perc) {\textbf{PERCEPTION} -- vật thể, cảm biến, actuator, nhúng};
+\draw[arrow,<->](app)--(net);\draw[arrow,<->](net)--(perc);
+\end{tikzpicture}\caption{Kiến trúc IoT ba lớp; các mũi tên chỉ trao đổi hai chiều.}
+\end{figure}
+
+\subsection{Perception layer -- lớp cảm nhận}
+Bao gồm \textbf{hardware} (phần cứng nền), \textbf{IoT components} (cảm biến, actuator, bộ xử lý, antenna/giao tiếp) và \textbf{device software} (firmware để quản lý phần cứng). Nhiệm vụ nhận diện đối tượng, đo lường và xuất dữ liệu từ môi trường. Các lỗi thường gặp: sai số cảm biến, nhiễu, mất mẫu, cạn pin, sai đơn vị hoặc sai điểm hiệu chuẩn.
+\subsection{Network layer -- lớp mạng}
+Chịu trách nhiệm vận chuyển dữ liệu giữa things, hạ tầng kết nối và/hoặc đám mây. Thành phần có thể dùng Wi-Fi, BLE, mạng di động, Ethernet, các liên kết vô tuyến có gateway. Vấn đề cần khảo sát: độ phủ sóng, độ trễ, thông lượng, tỷ lệ mất gói, bảo mật và khả năng phục hồi khi mất kết nối.
+\subsection{Application layer -- lớp ứng dụng}
+Là nơi cung cấp chức năng theo mục tiêu người dùng: trao đổi/quản lý thiết bị, ứng dụng, công cụ phân tích dữ liệu, quản lý quy trình và nền tảng phát triển. Slide 33 phân tách nhiều chức năng phần mềm ngay trong lớp ứng dụng; cần nhớ \textbf{lớp ứng dụng không chỉ là một ứng dụng điện thoại}.
+\lecturesrc{29--33}
+
+\section{Kiến trúc 4 lớp hướng dịch vụ (SoA)}
+\term{Service-Oriented Architecture (SoA)} là tư duy xây dựng các khối chức năng độc lập tương đối, liên kết bằng giao diện và giao thức. Bài giảng trình bày kiến trúc bốn lớp: \textbf{Perception -- Network -- Data Processing -- Application}. Lớp xử lý dữ liệu được tách riêng để quản lý, kiểm tra, xử lý thông tin trước khi cung cấp lên ứng dụng.
+\begin{figure}[H]\centering
+\begin{tikzpicture}[node distance=3.6mm,every node/.style={font=\small}]
+\node[block,minimum width=100mm,fill=navy!10] (a) {4. Application -- ứng dụng và quyền sử dụng dịch vụ};
+\node[block,below=of a,minimum width=100mm,fill=teal!10] (p) {3. Data processing -- kiểm tra, xử lý, bảo vệ dữ liệu};
+\node[block,below=of p,minimum width=100mm] (n) {2. Network -- liên kết và chuyển tiếp};
+\node[block,below=of n,minimum width=100mm,fill=orangeiot!12] (s) {1. Perception -- nhận dạng và cảm nhận};
+\foreach \u/\v in {a/p,p/n,n/s}{\draw[arrow,<->](\u)--(\v);}
+\end{tikzpicture}\caption{Mô hình bốn lớp hướng dịch vụ theo bài giảng.}
+\end{figure}
+Bài giảng nhấn mạnh: application cung cấp giao diện và dịch vụ; data processing tiếp nhận dữ liệu từ perception thông qua network, kiểm tra tính hợp lệ và xử lý; network vận chuyển và liên kết mạng; perception nhận biết từng loại cảm biến và tập hợp số đo. Lưu ý \textbf{``hướng dịch vụ'' là nguyên tắc tổ chức chức năng}, không phải tên một giao thức truyền thông như MQTT, HTTP.
+\lecturesrc{34--36}
+
+\section{Kiến trúc 5 lớp (five-layer architecture)}
+Mô hình năm lớp được diễn giải \textbf{Perception -- Transport -- Processing/Middleware -- Application -- Business}. So với mô hình ba lớp, lớp vận chuyển được định danh riêng và thêm các khối xử lý, quản trị nghiệp vụ.
+\begin{figure}[H]\centering
+\begin{tikzpicture}[node distance=3mm,every node/.style={font=\small}]
+\node[block,minimum width=115mm,fill=navy!14] (b) {5. Business -- quản lý hệ thống, quy trình, mô hình kinh doanh};
+\node[block,below=of b,minimum width=115mm,fill=navy!5] (a) {4. Application -- cung cấp chức năng theo mục đích sử dụng};
+\node[block,below=of a,minimum width=115mm,fill=teal!12] (m) {3. Processing/Middleware -- lưu trữ, phân tích, xử lý};
+\node[block,below=of m,minimum width=115mm] (t) {2. Transport -- chuyển dữ liệu tới/về lớp cảm nhận};
+\node[block,below=of t,minimum width=115mm,fill=orangeiot!12] (p) {1. Perception -- đối tượng vật lý và thu nhận tín hiệu};
+\foreach \u/\v in {b/a,a/m,m/t,t/p}{\draw[arrow,<->](\u)--(\v);}
+\end{tikzpicture}\caption{Cấu trúc năm lớp; xử lý dữ liệu và quản lý nghiệp vụ được phân tách.}
+\end{figure}
+\begin{description}[leftmargin=0.5cm,style=nextline]
+\item[Perception] Cảm nhận, định danh đối tượng, lấy dữ liệu. Bao gồm RFID, barcode và các loại cảm biến trong mô tả mở rộng của bài giảng.
+\item[Transport] Truyền dữ liệu qua mạng có dây, mạng không dây, mạng di động, Bluetooth, RFID, NFC và hệ thống trung gian; liệt kê này biểu thị các \textit{phương tiện và công nghệ}, không phải tất cả nằm cùng một lớp giao thức OSI.
+\item[Processing/Middleware] Cơ sở dữ liệu, điện toán đám mây, xử lý dữ liệu lớn, quản lý dịch vụ, thuật toán ra quyết định.
+\item[Application] Phần mềm người dùng và hệ thống chức năng, ví dụ giám sát nhiệt độ hoặc quản lý tòa nhà.
+\item[Business] Quản lý mục tiêu và hiệu quả hệ thống, mô hình kinh doanh, chính sách và quyền riêng tư của người dùng.
+\end{description}
+\lecturesrc{37--39}
+
+\section{Kiến trúc 6 và 7 lớp trong hình của bài giảng}
+\subsection{Sáu lớp: chú ý cách đếm trong chính slide}
+Trang PDF 40 có tiêu đề \textit{Six-Layer IoT Architecture}, nhưng hình thực tế vẽ \textbf{năm dải chức năng theo chiều dọc} gồm physical/device, network, data/database, application/integration, analytics/visualization; bên cạnh là \textbf{security and management layer} chạy xuyên suốt. Vì vậy trong tài liệu này, ta hiểu đây là \textbf{năm lớp chức năng cộng một lớp/chức năng xuyên suốt bảo mật--quản trị}. Đây là cách đọc trung thành với hình chứ không ép biến bảo mật thành một tầng truyền dữ liệu độc lập.
+\begin{figure}[H]\centering
+\begin{tikzpicture}[node distance=3.2mm,every node/.style={font=\small}]
+\node[block,minimum width=95mm,fill=orangeiot!16] (v) {Analytics / Visualization};
+\node[block,below=of v,minimum width=95mm,fill=navy!9] (i) {Application / Integration};
+\node[block,below=of i,minimum width=95mm,fill=teal!12] (d) {Data / Database};
+\node[block,below=of d,minimum width=95mm] (n) {Network};
+\node[block,below=of n,minimum width=95mm,fill=orangeiot!13] (p) {Physical / Device};
+\foreach \u/\w in {v/i,i/d,d/n,n/p}{\draw[arrow,<->](\u)--(\w);}
+\draw[very thick,dashed,orangeiot,rounded corners=2mm] ([xshift=-2mm,yshift=2mm]v.north west) rectangle ([xshift=2mm,yshift=-2mm]p.south east);
+\node[rotate=90,anchor=south,font=\scriptsize,text=orangeiot] at ([xshift=8mm]d.east) {Security \& Management (xuyên suốt)};
+\end{tikzpicture}\caption{Diễn giải hình sáu lớp: năm dải chức năng và bảo mật--quản trị xuyên suốt.}
+\end{figure}
+
+\subsection{Bảy lớp: dữ liệu và giá trị được tách chi tiết hơn}
+Hình kiến trúc 7 lớp (trang PDF 41) đưa ra chuỗi:
+\begin{enumerate}
+\item \textbf{Things}: thiết bị, cảm biến, bộ điều khiển.
+\item \textbf{Connectivity/Edge Computing}: giao thức, mạng, xử lý gần nguồn dữ liệu.
+\item \textbf{Global Infrastructure}: hạ tầng công cộng/riêng/hỗn hợp cung cấp tính toán và kết nối.
+\item \textbf{Data Ingestion}: nhận và tiếp nhận khối dữ liệu.
+\item \textbf{Data Analysis}: báo cáo, khai phá dữ liệu, học máy.
+\item \textbf{Applications}: biến dữ liệu thành chức năng sử dụng.
+\item \textbf{People \& Process}: con người, quy trình và tác động kinh doanh.
+\end{enumerate}
+\begin{figure}[H]\centering
+\begin{tikzpicture}[node distance=2.3mm,every node/.style={font=\small}]
+\node[block,minimum width=115mm,fill=navy!13] (l7) {7. People \& Process -- sử dụng kết quả ra quyết định};
+\node[block,below=of l7,minimum width=115mm] (l6) {6. Applications -- tích hợp chức năng};
+\node[block,below=of l6,minimum width=115mm,fill=teal!9] (l5) {5. Data Analysis -- phân tích, học máy};
+\node[block,below=of l5,minimum width=115mm] (l4) {4. Data Ingestion -- tiếp nhận, nhập dữ liệu};
+\node[block,below=of l4,minimum width=115mm,fill=teal!9] (l3) {3. Global Infrastructure -- hạ tầng điện toán};
+\node[block,below=of l3,minimum width=115mm] (l2) {2. Connectivity / Edge Computing -- truyền và xử lý cận biên};
+\node[block,below=of l2,minimum width=115mm,fill=orangeiot!12] (l1) {1. Things -- cảm biến, thiết bị, cơ cấu chấp hành};
+\foreach \a/\b in {l7/l6,l6/l5,l5/l4,l4/l3,l3/l2,l2/l1}{\draw[arrow,<->](\a)--(\b);}
+\end{tikzpicture}\caption{Tái dựng kiến trúc bảy lớp theo thành phần mô tả trong slide.}
+\end{figure}
+\lecturesrc{40--41}
+
+\section{Bảng đối chiếu nhanh các mô hình}
+\begin{table}[H]\centering\small
+\caption{Cách đọc các mô hình kiến trúc trong bài giảng}
+\begin{tabularx}{\textwidth}{p{1.5cm}Xp{3.9cm}}\toprule
+Mô hình&Phân chia chính&Điểm cần nhớ\\\midrule
+3 lớp&Perception -- Network -- Application&Đơn giản, dễ nắm đường đi dữ liệu.\\
+4 lớp&Perception -- Network -- Data Processing -- Application&Chú ý lớp xử lý và tư duy SoA.\\
+5 lớp&Perception -- Transport -- Processing -- Application -- Business&Tách quản lý nghiệp vụ ra khỏi ứng dụng.\\
+6 lớp&5 lớp dọc, Security \& Management ngang&Lưu ý cách thể hiện ở slide, bảo mật xuyên suốt.\\
+7 lớp&Things -- Connectivity/Edge -- Global Infrastructure -- Data Ingestion -- Data Analysis -- Applications -- People/Process&Theo sát đường dữ liệu từ thiết bị tới giá trị nghiệp vụ.\\\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Ví dụ đặt các thành phần vào từng lớp}
+Xét hệ thống quan trắc chất lượng không khí gồm cảm biến PM2.5, nhiệt độ và độ ẩm, MCU, bộ thu trung gian, máy chủ, dashboard và quy tắc báo động. Theo mô hình ba lớp: cảm biến+MCU thuộc perception; bộ thu và đường truyền thuộc network; máy chủ, phân tích và dashboard thuộc application. Theo năm lớp: các nút đo thuộc perception; đường truyền thuộc transport; database và logic phân tích thuộc processing; dashboard thuộc application; quy trình quản lý chất lượng môi trường và phân quyền vận hành thuộc business.
+
+\begin{expandbox}
+\textbf{Thiết kế an toàn theo luồng dữ liệu:} đo tại MCU $\rightarrow$ kiểm tra giá trị và timestamp $\rightarrow$ đóng gói thông điệp có \texttt{device\_id} $\rightarrow$ giao thức truyền có xác thực $\rightarrow$ tiếp nhận, kiểm tra định dạng và phân quyền $\rightarrow$ lưu/hiển thị $\rightarrow$ phát lệnh khi được phép. Đây là ví dụ triển khai tăng cường từ nguyên lý, không phải cấu hình bắt buộc của slide.
+\end{expandbox}
+
+\section{Các chỉ tiêu thiết kế cần đánh giá}
+\subsection{Thông lượng và tần suất gửi}
+Giả sử mỗi mẫu có $B$ byte và được gửi mỗi $T$ giây, tốc độ dữ liệu trung bình theo lý thuyết là
+\[R=\frac{8B}{T}\quad \text{bit/s}.\]
+Nếu $B=100$ byte, $T=10$ giây, $R=80$ bit/s cho một nút, chưa tính overhead giao thức, truyền lại và bảo mật. Với $N$ nút, lưu lượng tải trung bình lý tưởng xấp xỉ $NR$; thực tế phải cộng chi phí truyền thông và tỷ lệ nút gửi đồng thời.
+\subsection{Độ trễ, độ tin cậy và tính khả dụng}
+\term{Latency} là thời gian từ sự kiện đến phản hồi; \term{reliability} là xác suất hoạt động chính xác trong điều kiện xác định; \term{availability} là tỷ lệ thời gian dịch vụ sẵn sàng; \term{fault tolerance} là khả năng tiếp tục cung cấp chức năng khi một số thành phần gặp lỗi. Một hệ điều khiển cảnh báo tại chỗ không nên phụ thuộc hoàn toàn vào độ trễ cloud.
+\subsection{Năng lượng của nút IoT}
+Với chế độ hoạt động $i$, dòng tiêu thụ $I_i$ và tỷ lệ thời gian $d_i$, dòng trung bình ước lượng là
+\[I_{\mathrm{avg}}=\sum_i d_i I_i,\qquad \sum_i d_i=1.\]
+Ước lượng thời gian dùng pin lý tưởng là $t\approx C_{\mathrm{usable}}/I_{\mathrm{avg}}$ (giờ), khi $C$ đo bằng mAh và $I$ đo bằng mA. Để sử dụng công thức phải xét tổn hao bộ nguồn, xung dòng đỉnh, nhiệt độ, độ lão hóa và giới hạn điện áp. Các công thức này là \textbf{kiến thức mở rộng} hỗ trợ mục tiêu giảm tiêu thụ năng lượng nêu ở slide.
+
+\section{Tổng kết và câu hỏi tự kiểm tra}
+\begin{notebox}
+\textbf{Nhớ 6 ý:} Things tạo dữ liệu; Gateway chuyển/tiền xử lý; Cloud xử lý và lưu trữ quy mô lớn; Services diễn giải để phục vụ quyết định; UI kết nối hệ thống với người dùng; phân lớp khác nhau giúp đặt đúng trách nhiệm kỹ thuật.
+\end{notebox}
+\begin{enumerate}
+\item Vẽ kiến trúc chức năng bốn khối cộng UI, nêu dữ liệu và lệnh đi theo các hướng nào.
+\item Vì sao gateway không nhất thiết giống router? Hãy nêu ba chức năng có thể bổ sung vào gateway.
+\item Mô tả ba lớp của mô hình IoT cơ bản và chỉ ra firmware thuộc lớp nào.
+\item So sánh bốn lớp SoA với năm lớp: có thêm hoặc thay đổi khối nào?
+\item Vì sao trong slide sáu lớp, security and management cần được hiểu là chức năng xuyên suốt?
+\item Liệt kê bảy lớp theo sơ đồ và giải thích hai lớp liên quan tới xử lý dữ liệu.
+\item Một mạng có 50 nút, mỗi nút gửi 120 byte mỗi 20 giây. Tính lưu lượng hữu ích trung bình (chưa kể overhead). Đáp số: $50\times 120\times 8/20=2400$ bit/s.
+\end{enumerate}
