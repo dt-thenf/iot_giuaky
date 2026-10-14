@@ -1,0 +1,52 @@
+name: Build LuaLaTeX study PDFs
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'main.tex'
+      - 'preamble.tex'
+      - 'chapters/**'
+      - '.github/workflows/build-pdf.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install LuaLaTeX and Vietnamese fonts
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq \
+            texlive-luatex texlive-latex-extra texlive-lang-european \
+            texlive-pictures texlive-fonts-recommended latexmk \
+            fonts-noto-core fonts-dejavu-core
+      - name: Compile master and each chapter
+        run: |
+          set -euo pipefail
+          latexmk -lualatex -interaction=nonstopmode -halt-on-error -outdir=build main.tex
+          for i in 01 02 03; do
+            latexmk -lualatex -interaction=nonstopmode -halt-on-error -outdir=build chapters/standalone_${i}.tex
+          done
+          mkdir -p pdf
+          cp build/main.pdf pdf/iot_tong_hop_3_chuong.pdf
+          for i in 01 02 03; do
+            cp build/standalone_${i}.pdf pdf/chuong_${i}.pdf
+          done
+      - name: Commit generated PDFs
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add pdf/*.pdf
+          if ! git diff --cached --quiet; then
+            git commit -m 'docs: regenerate Vietnamese IoT study PDFs'
+            git push
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iot-lualatex-pdf
+          path: pdf/*.pdf

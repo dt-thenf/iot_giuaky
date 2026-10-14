@@ -1,0 +1,162 @@
+\chapter{Ứng dụng, cơ hội và thách thức của Internet of Things}
+\label{chap:applications}
+\begin{notebox}
+\textbf{Mục tiêu:} nhận biết các nhóm ứng dụng IoT; phân tích hai tình huống trong bài giảng (nhà thông minh và ô tô kết nối); hiểu chuỗi giá trị từ dữ liệu tới dịch vụ; trình bày các thách thức kỹ thuật, xã hội, đạo đức và vận hành khi triển khai.
+\end{notebox}
+\section{Các lĩnh vực ứng dụng IoT}
+Bài giảng sử dụng hình tổng quan với các ví dụ: \term{smart home}, \term{wearables}, \term{smart city}, \term{smart grid}, \term{industrial internet}, \term{connected car}, \term{connected health}, \term{smart retail}, \term{smart supply chain}, \term{smart farming}. Đây là những lĩnh vực ứng dụng, không phải mười giao thức hay mười kiểu kiến trúc riêng biệt.
+\lecturesrc{42--43}
+
+\begin{figure}[H]\centering
+\begin{tikzpicture}[every node/.style={font=\footnotesize,align=center}]
+\node[block,minimum width=29mm,minimum height=15mm,fill=navy!12] (c) at (0,0) {ỨNG DỤNG\\IoT};
+\foreach [count=\ii] \x/\y/\txt in {-4.8/2.1/Nhà thông minh,-1.6/2.1/Thiết bị đeo,1.6/2.1/Đô thị thông minh,4.8/2.1/Lưới điện,-4.8/0/Công nghiệp,4.8/0/Xe kết nối,-4.8/-2.1/Y tế kết nối,-1.6/-2.1/Bán lẻ,1.6/-2.1/Chuỗi cung ứng,4.8/-2.1/Nông nghiệp}{
+\node[subblock,minimum width=26mm,minimum height=10mm] (n\ii) at (\x,\y) {\txt};
+\draw[teal!50,thick] (c)--(n\ii);
+}
+\end{tikzpicture}\caption{Mười nhóm ứng dụng liệt kê ở phần Internet of Things Applications của bài giảng.}
+\end{figure}
+
+\subsection{Nhà thông minh và tòa nhà thông minh}
+Các cảm biến nhiệt độ, độ ẩm, chuyển động, ánh sáng, cửa và công suất điện cùng thiết bị điều khiển đèn, máy lạnh, khóa, ổ cắm, rèm tạo thành hệ thống phối hợp. Giá trị nằm ở tự động hóa theo ngữ cảnh (ví dụ tắt thiết bị khi không có người), giám sát từ xa và tiết kiệm năng lượng. Rủi ro: mất kết nối, truy cập trái phép và phụ thuộc nhà cung cấp.
+\subsection{Thiết bị đeo và y tế kết nối}
+Thiết bị đeo theo dõi vận động, nhịp tim hoặc điều kiện môi trường; hệ chăm sóc sức khỏe có thể tổng hợp dữ liệu để hỗ trợ theo dõi từ xa. Cần chú trọng chất lượng số đo, bảo vệ dữ liệu cá nhân, cảnh báo giả và giới hạn của thiết bị không đạt chứng nhận y tế. \textbf{Một thiết bị theo dõi sức khỏe thông thường không tự động là thiết bị chẩn đoán lâm sàng.}
+\subsection{Đô thị thông minh và giao thông}
+Cảm biến bãi đỗ, đo môi trường, chiếu sáng công cộng và giám sát giao thông có thể giúp tối ưu tài nguyên đô thị. Xe kết nối có thể thông báo bảo dưỡng, trạng thái động cơ, vị trí và lịch sử vận hành; những ứng dụng yêu cầu phản hồi an toàn không nên dựa duy nhất vào đường truyền Internet không ổn định.
+\subsection{Công nghiệp, điện và chuỗi cung ứng}
+IIoT thu thập rung/nhiệt độ/dòng điện của máy để phát hiện bất thường, phục vụ bảo trì dựa trên tình trạng. Smart grid hỗ trợ đo điện, điều phối sử dụng, phát hiện bất thường. Smart supply chain kết hợp nhãn nhận dạng, vị trí và trạng thái hàng hóa để theo dõi nguồn gốc và tối ưu logistics.
+\subsection{Bán lẻ và nông nghiệp thông minh}
+Bán lẻ: theo dõi hàng tồn kho, mức sử dụng thiết bị làm lạnh, điều kiện bảo quản. Nông nghiệp: quan trắc độ ẩm đất, thời tiết cục bộ, dinh dưỡng, tình trạng cây trồng, kích hoạt tưới tiêu có điều kiện. IoT có thể tạo dữ liệu hữu ích nhưng không thay thế hoàn toàn quy trình kiểm tra thực địa.
+
+\section{Tình huống 1 trong bài giảng: đồng hồ báo thức thông minh}
+Bài giảng trình bày một người đi học thường dậy lúc \textbf{7:00}. Khi xe buýt bị hủy, trời mưa khiến phương án đi Grab không khả thi và phải di chuyển bằng xe đạp, người đó cần dậy lúc \textbf{6:30}. Đồng hồ báo thức IoT có thể lấy thông tin lịch xe, thời tiết và thời gian di chuyển để tự điều chỉnh giờ thức dậy. Nếu kết nối máy pha cà phê, hệ thống còn có thể chuẩn bị đồ uống theo giờ thức dậy mới.
+\lecturesrc{44}
+
+\begin{figure}[H]\centering
+\begin{tikzpicture}[node distance=4mm and 8mm,every node/.style={font=\small}]
+\node[block] (transit) {Trạng thái\\xe buýt};
+\node[block,below=of transit] (rain) {Dự báo\\thời tiết};
+\node[block,below=of rain] (route) {Lịch học, thời gian\\di chuyển};
+\node[subblock,right=22mm of rain,minimum width=30mm,minimum height=20mm] (logic) {Bộ xử lý:\\đề xuất giờ dậy};
+\node[block,right=17mm of logic] (alarm) {Đồng hồ\\6:30};
+\node[block,below=8mm of alarm] (coffee) {Máy pha cà phê\\(tùy chọn)};
+\foreach \from in {transit,rain,route}{\draw[arrow] (\from.east)--(logic.west);}
+\draw[arrow](logic)--(alarm);\draw[arrow](logic.east)-| (coffee.north);
+\end{tikzpicture}\caption{Tái dựng luồng ra quyết định trong tình huống đồng hồ báo thức.}
+\end{figure}
+
+\textbf{Phân tích theo khối:} dữ liệu ngoài (xe buýt, thời tiết) $\rightarrow$ dịch vụ ra quyết định $\rightarrow$ lệnh cấu hình báo thức và thiết bị trong nhà. Giá trị cốt lõi không phải chỉ ``có Wi-Fi'', mà là khả năng thích ứng với ngữ cảnh thực tế để đạt mục tiêu đến lớp đúng giờ.
+
+\begin{expandbox}
+\textbf{Những vấn đề thiết kế cần giải quyết:} dữ liệu bên thứ ba có thể chậm hoặc sai; dự báo thời tiết không chắc chắn; điện thoại và báo thức phải đồng bộ múi giờ; hệ thống phải có giờ báo thức dự phòng khi mất mạng; người dùng phải có quyền từ chối thay đổi tự động. Đây là những tiêu chí mở rộng từ tình huống trong slide.
+\end{expandbox}
+
+\section{Tình huống 2 trong bài giảng: ô tô kết nối}
+Khi đèn cảnh báo bảo dưỡng động cơ bật sáng, các bộ cảm biến trên ô tô cung cấp dữ liệu liên quan. Một cơ chế chẩn đoán tổng hợp thông tin rồi gửi tới gateway trên xe; gateway chuyển thông tin phù hợp tới nhà sản xuất/đơn vị dịch vụ. Dữ liệu có thể giúp đánh giá mức khẩn cấp, đề xuất cơ sở sửa chữa gần nhất, đặt lịch và chuẩn bị phụ tùng.
+\lecturesrc{45}
+
+\begin{figure}[H]\centering
+\begin{tikzpicture}[node distance=6mm and 7mm,every node/.style={font=\small}]
+\node[block,minimum width=24mm] (s) {Cảm biến xe\\động cơ};
+\node[block,right=of s,minimum width=24mm] (ecu) {ECU/chẩn đoán\\lọc sự kiện};
+\node[block,right=of ecu,minimum width=25mm] (gw) {Gateway\\trên ô tô};
+\node[block,right=of gw,minimum width=27mm] (cloud) {Dịch vụ hãng\\và bảo dưỡng};
+\node[subblock,below=12mm of cloud] (driver) {Tài xế: xem mức độ sự cố,\\nhận lịch bảo dưỡng};
+\foreach \from/\to in {s/ecu,ecu/gw,gw/cloud}{\draw[arrow](\from)--(\to);}
+\draw[arrow] (cloud)--(driver);
+\end{tikzpicture}\caption{Chuỗi chẩn đoán và dịch vụ bảo dưỡng của ô tô kết nối.}
+\end{figure}
+
+\textbf{Tách vai trò:} cảm biến trả lời ``đang xảy ra điều gì''; ECU và bộ chẩn đoán trả lời ``hiện tượng có nghĩa gì''; gateway chuyển dữ liệu; nền tảng dịch vụ quyết định thông báo hoặc sắp lịch; người điều khiển/nhân viên bảo dưỡng thực hiện hành động. Từ góc nhìn kinh doanh, hệ thống chuyển từ sửa chữa khi hỏng sang chủ động tiếp cận dịch vụ.
+
+\section{Cơ hội do IoT mang lại}
+Slide về \term{IoT Challenges and Opportunities} nhấn mạnh bốn nhóm tác động: \textit{New Markets}, \textit{Changed Value Creation}, \textit{Increased Awareness for Information Spaces}, và \textit{Social, Ethical, Legal and Risk Aspects}. Ba nhóm đầu diễn đạt cơ hội; nhóm cuối đặt ra yêu cầu cân nhắc trách nhiệm đối với dữ liệu và người sử dụng.
+\lecturesrc{47}
+
+\subsection{Thị trường mới (New Markets)}
+Sự kết nối tạo ra sản phẩm, dịch vụ và thị trường mới: giám sát môi trường theo thuê bao, quản lý thiết bị từ xa, bảo trì dự báo, phân tích sử dụng tài sản. Một sản phẩm vật lý có thể được bổ sung dịch vụ số; doanh nghiệp phải tính cả vận hành máy chủ, bảo trì firmware và hỗ trợ khách hàng sau khi bán.
+\subsection{Thay đổi cách tạo giá trị (Changed Value Creation)}
+Giá trị không chỉ ở phần cứng mà ở chất lượng dữ liệu, việc phân tích và tối ưu quy trình. Ví dụ cảm biến nhiệt độ giá thấp tự nó không tạo lợi ích lớn; khi gắn với cảnh báo bảo quản vaccine hoặc thực phẩm, hệ thống có thể ngăn thiệt hại và hỗ trợ ra quyết định.
+\subsection{Nhận biết rõ hơn không gian thông tin}
+Dữ liệu đo từ các vật thể làm cho trạng thái của môi trường trở nên quan sát được: vị trí xe, điện năng tiêu thụ, độ rung máy, mức nước, xu hướng chất lượng không khí. Tuy nhiên tăng lượng dữ liệu \textbf{không đồng nghĩa tự động tăng chất lượng thông tin}: phải đánh giá nguồn đo, sai số, hiệu chuẩn, độ trễ và ngữ cảnh.
+
+\section{Các thách thức công nghệ trong triển khai IoT}
+Bài giảng nêu: Internet mọi nơi/mọi lúc; khả năng chấp nhận xã hội; nút cảm biến giá rẻ; thu thập năng lượng; năng lực tính toán; bảo mật; mở rộng quy mô, độ tin cậy; chịu lỗi; mức tiêu thụ điện của node và transceiver. Các mục dưới đây giải thích từng nhóm theo câu hỏi \emph{vì sao khó} và \emph{giải quyết ở cấp thiết kế nào}.
+\lecturesrc{48}
+
+\subsection{Kết nối mọi nơi -- mạng không luôn sẵn sàng}
+Thiết bị có thể lắp dưới hầm, trong nhà máy nhiều nhiễu hoặc vùng ít hạ tầng. Các mạng khác nhau có giới hạn về tầm phủ, tốc độ, chi phí, năng lượng và độ trễ. Giải pháp về mặt nguyên tắc: lựa chọn công nghệ kết nối đúng yêu cầu, có bộ đệm khi offline, truyền lại khi phù hợp, thiết kế cơ chế cảnh báo trạng thái mất kết nối và xử lý an toàn tại chỗ.
+\subsection{Chi phí thấp và giới hạn tài nguyên phần cứng}
+Nút cảm biến thường có RAM/flash nhỏ, CPU hạn chế và ngân sách điện năng khắt khe. Giá thành sản xuất thấp phải đi cùng độ chính xác, độ ổn định và khả năng bảo trì. Cần chọn cảm biến theo dải đo, độ phân giải, giao tiếp, tuổi thọ, độ sẵn có của linh kiện và yêu cầu hiệu chuẩn chứ không chỉ giá thấp nhất.
+\subsection{Năng lượng và power management}
+Các mô-đun vô tuyến có thể tiêu thụ dòng lớn trong lúc phát; hoạt động sleep tiêu thụ ít hơn nhưng làm tăng thời gian phản hồi. Kỹ sư phải cân bằng chu kỳ đo, chu kỳ truyền, xử lý cục bộ và độ trễ cảnh báo. \term{Energy harvesting} (thu hồi năng lượng) có thể dùng nguồn môi trường như ánh sáng hoặc rung động, song khả năng cấp điện phụ thuộc điều kiện triển khai.
+
+\begin{expandbox}
+\textbf{Ví dụ tính nhanh:} một nút sleep $9.9$ giây tại $0.05$ mA và phát $0.1$ giây tại $80$ mA mỗi chu kỳ $10$ giây. Dòng trung bình lý tưởng
+\[I_\mathrm{avg}=\frac{9.9\times0.05+0.1\times80}{10}=0.8495\ \mathrm{mA}.\]
+Với dung lượng khả dụng giả định $2000$ mAh, thời gian ước lượng lý tưởng $2000/0.8495\approx 2354$ giờ, gần $98$ ngày. Phép tính \textbf{không} bao gồm các dòng tiêu thụ khác, hiệu suất nguồn, tự xả hay suy giảm dung lượng; không dùng làm cam kết thời gian pin thực tế.
+\end{expandbox}
+
+\subsection{Scalability -- khả năng mở rộng}
+Hệ thống phải chịu được số node, số thông điệp, dung lượng lưu và lượng người dùng tăng lên. Khi gấp đôi số nút, các nút cùng báo cáo tại một thời điểm có thể gây tải đỉnh vượt khả năng gateway hoặc broker. Cần tính tải trung bình và tải đỉnh; phân chia vùng, giới hạn tốc độ, cân bằng tải, phân quyền và lưu trữ theo vòng đời dữ liệu.
+\subsection{Reliability và fault tolerance}
+\term{Reliability} đề cập khả năng cung cấp đúng chức năng; \term{fault tolerance} đề cập khả năng vẫn hoạt động hoặc suy giảm có kiểm soát khi gặp sự cố. Thiết kế phải xác định trạng thái \term{fail-safe}: hệ thống tưới mất kết nối không được kẹt van mở liên tục; cảnh báo cháy không nên phụ thuộc duy nhất vào cloud. Bộ nhớ đệm, watchdog, retry có giới hạn và cơ chế phục hồi là các biện pháp có thể cân nhắc.
+\subsection{Security -- an ninh hệ thống}
+Các nguy cơ gồm thiết bị giả mạo, lộ khóa và mật khẩu, nghe lén, sửa gói, firmware độc hại, truy cập dashboard trái phép và quá tải dịch vụ. Bảo mật phải có từ thiết bị tới máy chủ: xác thực, kênh mã hóa phù hợp, nguyên tắc đặc quyền tối thiểu, quản lý khóa, cập nhật an toàn và nhật ký kiểm tra. \textbf{Mã hóa đường truyền không thay thế xác thực và phân quyền đầu cuối.}
+
+\begin{figure}[H]\centering
+\begin{tikzpicture}[node distance=7mm and 8mm,every node/.style={font=\small}]
+\node[block] (dev) {Node / Firmware\\khóa định danh};
+\node[block,right=of dev] (net) {Đường truyền\\xác thực, mã hóa};
+\node[block,right=of net] (srv) {Server / Cloud\\phân quyền, log};
+\node[block,right=of srv] (ui) {Người dùng / UI\\quyền điều khiển};
+\foreach \a/\b in {dev/net,net/srv,srv/ui}{\draw[arrow,<->](\a)--(\b);}
+\draw[orangeiot,thick,dashed,rounded corners=2mm] ([xshift=-2mm,yshift=5mm]dev.north west) rectangle ([xshift=2mm,yshift=-6mm]ui.south east);
+\node[font=\footnotesize,text=orangeiot] at (6,-1.25) {Bảo mật là yêu cầu xuyên suốt vòng đời hệ thống};
+\end{tikzpicture}\caption{Các lớp kiểm soát an ninh từ thiết bị đến người dùng.}
+\end{figure}
+
+\section{Thách thức xã hội, đạo đức, pháp lý và rủi ro}
+\subsection{Sự chấp nhận của cá nhân và cộng đồng}
+Người dùng có thể lo ngại thiết bị quá phức tạp, theo dõi liên tục, phụ thuộc Internet hoặc gây phiền nhiễu. Giải pháp về thiết kế sản phẩm: giải thích lợi ích rõ ràng, yêu cầu chấp thuận phù hợp, cung cấp nút tắt/điều khiển thủ công, thông báo lỗi dễ hiểu và duy trì trải nghiệm khi ngoại tuyến nếu chức năng cho phép.
+\subsection{Dữ liệu và quyền riêng tư}
+Cần xác định mục đích thu thập, lượng dữ liệu tối thiểu, đối tượng có quyền truy cập, thời gian lưu và cách xóa dữ liệu. Dữ liệu vị trí, thói quen sinh hoạt hoặc thông tin sức khỏe có thể nhạy cảm. Phân quyền kỹ thuật phải đi cùng quy trình tổ chức và yêu cầu pháp lý áp dụng; không nên thu dữ liệu chỉ vì cảm biến có khả năng đo.
+\subsection{Rủi ro trong vòng đời sản phẩm}
+Ngoài tấn công mạng còn có pin chai, mất hỗ trợ phần mềm, chuẩn truyền không tương thích, máy chủ ngừng vận hành, thay đổi nhà cung cấp và chi phí vận hành kéo dài. Một sản phẩm IoT phải có kế hoạch cập nhật firmware, sửa chữa, thay thế và ngừng hỗ trợ an toàn.
+\lecturesrc{47--49}
+
+\section{Đối chiếu cơ hội -- yêu cầu thiết kế}
+\begin{table}[H]\centering\small
+\caption{Chuyển cơ hội ứng dụng thành tiêu chí kỹ thuật}
+\begin{tabularx}{\textwidth}{p{3cm}XX}\toprule
+Giá trị kỳ vọng&Đầu vào dữ liệu cần thiết&Thách thức ưu tiên\\\midrule
+Cảnh báo sự cố máy sớm&Rung, nhiệt, dòng điện, lịch sử vận hành&Độ tin cậy sensor, cảnh báo giả, bảo trì mạng\\
+Giảm điện năng tòa nhà&Đo điện, hiện diện, giờ sử dụng&Quyền riêng tư, an toàn điều khiển, công suất nguồn\\
+Theo dõi đội xe&Vị trí, thông số xe, lịch hành trình&Phủ sóng, bảo vệ dữ liệu vị trí, ngoại tuyến\\
+Tưới tiêu theo tình trạng&Ẩm đất, thời tiết, lịch tưới&Hiệu chuẩn, pin và vỏ chống nước, trạng thái fail-safe\\
+Quản lý kho lạnh&Nhiệt độ, cửa mở, mất điện&Lưu dữ liệu không gián đoạn, cảnh báo và dự phòng nguồn\\\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Phân tích dự báo trong slide và giới hạn sử dụng}
+Trang PDF 46 chứa một infographic dự báo cho năm \textbf{2025} với một số chỉ tiêu về số kết nối, giá trị kinh tế và dung lượng dữ liệu. Vì đây là \textbf{dự báo tại thời điểm xây dựng slide} và bản gốc không cung cấp đầy đủ cách tính/định nghĩa các chỉ tiêu ngay trên trang, tài liệu này \textbf{không trình bày các con số đó như kết quả thực nghiệm đã được xác nhận}. Nội dung cần học là cơ sở suy luận: số nút gia tăng kéo theo nhu cầu lớn về quản lý thiết bị, cơ sở hạ tầng, bảo mật, năng lượng và phân tích dữ liệu.
+\lecturesrc{46}
+
+\section{Tổng kết: từ IoT tới giá trị thực tế}
+Bài giảng kết luận IoT được hình thành nhờ hội tụ công nghệ vô tuyến, vi cơ điện tử và Internet; hệ thống gồm cảm biến, thiết bị kết nối và tài nguyên lưu trữ lớn; công nghệ/giao thức mới liên tục thúc đẩy giá thành, tính khả dụng, hiệu quả năng lượng và bảo mật. Cần nhớ rằng \textbf{bài toán kỹ thuật chỉ có ý nghĩa khi gắn với yêu cầu sử dụng rõ ràng, chi phí vận hành và trách nhiệm đối với người dùng}.
+\lecturesrc{49}
+
+\begin{notebox}
+\textbf{Tóm tắt thi:} Nắm 10 lĩnh vực ứng dụng; biết phân tích hai scenario theo chuỗi dữ liệu--gateway--service--người dùng; thuộc bốn nhóm cơ hội/tác động trong slide và chín nhóm thách thức; giải thích được các cặp dễ nhầm: scalability/reliability, reliability/fault tolerance, data/information, encryption/access control.
+\end{notebox}
+\section{Câu hỏi tự kiểm tra và bài tập tình huống}
+\begin{enumerate}
+\item Liệt kê mười ứng dụng minh họa trong bài giảng. Chọn ba ứng dụng và nêu đại lượng cần đo.
+\item Trong tình huống đồng hồ báo thức, đâu là dữ liệu đầu vào, đâu là quy tắc ra quyết định, đâu là thiết bị được điều khiển?
+\item Trong tình huống ô tô kết nối, khác biệt giữa dữ liệu chẩn đoán tại xe và dịch vụ bảo dưỡng dự báo là gì?
+\item Phân tích ba cơ hội: thị trường mới, thay đổi tạo giá trị, tăng khả năng quan sát thế giới vật lý.
+\item Nêu năm thách thức kỹ thuật và đưa ra biện pháp giảm thiểu cho mỗi thách thức.
+\item Vì sao tăng số nút có thể làm giảm độ tin cậy của hệ thống dù mỗi cảm biến đều hoạt động tốt?
+\item Nếu thiết bị mất Internet, hệ thống nào vẫn cần xử lý tại chỗ? Hãy giải thích theo tiêu chí an toàn.
+\item Thiết kế bằng lời một hệ theo dõi kho lạnh: ít nhất ba loại thành phần phần cứng/phần mềm, chu kỳ lấy mẫu, ngưỡng cảnh báo, dự phòng khi mất điện và cơ chế quyền truy cập.
+\end{enumerate}

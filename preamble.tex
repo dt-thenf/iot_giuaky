@@ -1,0 +1,42 @@
+% Compile with LuaLaTeX; all Vietnamese text uses Unicode.
+\usepackage[a4paper,margin=2.2cm,headheight=16pt]{geometry}
+\usepackage{fontspec}
+\setmainfont{Noto Serif}
+\setsansfont{Noto Sans}
+\setmonofont{DejaVu Sans Mono}[Scale=0.83]
+\usepackage[vietnamese]{babel}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,booktabs,tabularx,array,longtable,multicol}
+\usepackage{graphicx,float,caption}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,calc,backgrounds,decorations.pathreplacing}
+\usepackage{xcolor}
+\definecolor{navy}{HTML}{142D54}
+\definecolor{teal}{HTML}{047F91}
+\definecolor{orangeiot}{HTML}{E0742A}
+\definecolor{lightblue}{HTML}{EBF3FA}
+\definecolor{softmint}{HTML}{E8F6F5}
+\definecolor{softorange}{HTML}{FFF3E8}
+\usepackage[most]{tcolorbox}
+\newtcolorbox{notebox}[1][]{colback=lightblue,colframe=navy!48,boxrule=0.7pt,arc=1.5mm,breakable,title=Ghi nhớ,#1}
+\newtcolorbox{sourcebox}[1][]{colback=softmint,colframe=teal!55,boxrule=0.7pt,arc=1.5mm,breakable,title=Đối chiếu tài liệu,#1}
+\newtcolorbox{expandbox}[1][]{colback=softorange,colframe=orangeiot!75,boxrule=0.7pt,arc=1.5mm,breakable,title=Kiến thức mở rộng,#1}
+\usepackage{enumitem}
+\setlist[itemize]{leftmargin=1.6em,itemsep=1.7pt,topsep=3pt}
+\setlist[enumerate]{leftmargin=1.65em,itemsep=2pt,topsep=3pt}
+\usepackage{titlesec}
+\titleformat{\chapter}[display]{\sffamily\bfseries\Huge\color{navy}}{CHƯƠNG \thechapter}{7pt}{\Huge}
+\titleformat{\section}{\sffamily\Large\bfseries\color{navy}}{\thesection}{0.8em}{}
+\titleformat{\subsection}{\sffamily\large\bfseries\color{teal}}{\thesubsection}{0.7em}{}
+\usepackage{fancyhdr}
+\pagestyle{fancy}\fancyhf{}\fancyhead[L]{\footnotesize\sffamily CƠ SỞ VÀ THIẾT KẾ HỆ THỐNG IoT}\fancyhead[R]{\footnotesize\sffamily TÀI LIỆU ÔN TẬP}\fancyfoot[C]{\sffamily\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+\usepackage{hyperref}
+\hypersetup{unicode=true,colorlinks=true,linkcolor=navy,urlcolor=teal,pdfauthor={Tổng hợp học tập từ các tài liệu được cung cấp},pdftitle={Tổng hợp kiến thức Internet of Things - ba chương}}
+\usepackage{bookmark}
+\captionsetup{font=small,labelfont={bf,color=navy}}
+\tikzset{block/.style={draw=navy!60,very thick,rounded corners=2mm,align=center,fill=lightblue,minimum height=12mm,inner sep=3mm},arrow/.style={-{Latex[length=2.7mm]},very thick,draw=teal},subblock/.style={draw=teal!65,thick,rounded corners=2mm,align=center,fill=softmint,inner sep=3mm}}
+\newcommand{\term}[1]{\textbf{#1}}
+\newcommand{\lecturesrc}[1]{\par\smallskip{\footnotesize\color{teal}\textit{Theo bài giảng Chapter 1: An overview of IoT, trang PDF #1.}}}
+\setlength{\parindent}{0.65cm}\setlength{\parskip}{3pt}
+\emergencystretch=3em
