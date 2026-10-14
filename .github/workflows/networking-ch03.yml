@@ -31,5 +31,16 @@ jobs:
           git add networking_ch03/pdf/networking_ch03.pdf
           if ! git diff --cached --quiet; then
             git commit -m "docs: publish networking chapter 3 PDF"
-            git push
+            for attempt in 1 2 3 4 5; do
+              git fetch origin main
+              git rebase origin/main
+              if git push origin HEAD:main; then
+                break
+              fi
+              if [ "$attempt" -eq 5 ]; then
+                echo 'Unable to publish PDF after 5 attempts' >&2
+                exit 1
+              fi
+              sleep 3
+            done
           fi
