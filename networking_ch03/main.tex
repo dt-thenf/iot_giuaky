@@ -1,0 +1,31 @@
+\input{preamble}
+\begin{document}
+\frontmatter
+\begin{titlepage}
+\centering
+\vspace*{25mm}
+{\sffamily\color{blue}\Large TRƯỜNG ĐẠI HỌC PHENIKAA\par}
+\vspace{5mm}
+{\sffamily\large Học phần: Cơ sở và thiết kế hệ thống IoT\par}
+\vspace{30mm}
+{\sffamily\bfseries\Huge TỔNG HỢP KIẾN THỨC\par}
+\vspace{6mm}
+{\sffamily\bfseries\LARGE CÔNG NGHỆ MẠNG TRONG IoT\par}
+\vspace{10mm}{\color{accent}\rule{100mm}{1pt}\par}
+\vspace{12mm}{\large Chương 3 — Networking technologies in IoT\par}
+\vfill
+\begin{tcolorbox}[width=.87\textwidth,sharp corners,colback=white,colframe=blue]
+\small \textbf{Nguồn chính:} Slide bài giảng Chương 3, TS. Nguyễn Đắc Cử, Khoa Điện--Điện tử, Đại học Phenikaa (81 trang).\\
+\textbf{Tài liệu đối chiếu:} Q. F. Hassan (chủ biên), \emph{Internet of Things A to Z} (2018); A. McEwen và H. Cassimally, \emph{Designing the Internet of Things} (2014); A. James và cộng sự, \emph{IoT System Design} (2022).\\
+\textbf{Biên soạn:} Diễn giải độc lập bằng tiếng Việt, sơ đồ được vẽ mới. Thông số phụ thuộc phiên bản/điều kiện triển khai được ghi chú riêng.
+\end{tcolorbox}
+\vspace{14mm}{\small Tháng 10 năm 2026\par}
+\end{titlepage}
+\tableofcontents
+\mainmatter
+\setcounter{chapter}{2}
+\input{chapters/ch03/chapter}
+\backmatter
+\chapter*{Về việc mở rộng thành sáu chương}\addcontentsline{toc}{chapter}{Về việc mở rộng thành sáu chương}
+\noindent Mỗi chương có thư mục riêng \texttt{chapters/chNN/}. Sau khi có bài giảng Chương 1, 2, 4, 5, 6, thêm các lệnh \texttt{\\input\{chapters/chNN/chapter\}} vào \texttt{main.tex} theo đúng thứ tự. Tại phiên bản này chỉ Chương 3 có tài liệu nguồn đầy đủ, nên không tự bổ sung kiến thức thay cho các chương chưa được cung cấp.
+\end{document}

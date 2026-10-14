@@ -1,0 +1,97 @@
+\section{Giao thức trao đổi dữ liệu IoT (IoT Data Protocols)}
+\subsection{Hai mô hình trao đổi chính}
+\term{Request/response} (yêu cầu/đáp ứng): client gửi yêu cầu cụ thể đến server, server trả kết quả; thường gặp với HTTP, CoAP. \term{Publish/subscribe} (xuất bản/đăng ký): publisher gửi bản tin vào một \emph{topic}, broker chuyển cho subscriber đã đăng ký topic. Mô hình thứ hai giảm sự ràng buộc trực tiếp giữa bên phát và bên nhận, phù hợp nhiều nguồn và nhiều đối tượng nghe dữ liệu. \term{Subscribe} ở MQTT là đăng ký chủ đề nhận bản tin, \emph{không đồng nghĩa} thủ tục đăng ký định danh thiết bị vào mạng hoặc xác thực tài khoản như slide 56 có thể gây hiểu nhầm.\srcslide{55--59}
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[>=Latex,font=\footnotesize]
+\node[draw,rounded corners,fill=pale] (cl) at (0,2.3) {Client};\node[draw,rounded corners,fill=pale] (sv) at (4.4,2.3) {Server};
+\draw[->,blue,thick] (cl.north east) -- node[above]{Request} (sv.north west);\draw[->,accent,thick] (sv.south west) -- node[below]{Response} (cl.south east);
+\node[draw,rounded corners,fill=pale] (pub) at (0,-.5) {Publisher};\node[draw,rounded corners,fill=blue!14] (br) at (4.4,-.5) {Broker};\node[draw,rounded corners,fill=pale] (sub) at (8.5,-.5) {Subscriber};
+\draw[->,blue,thick] (pub)--node[above]{PUBLISH}(br);\draw[->,blue,thick] (br)--node[above]{Topic match}(sub);
+\draw[->,accent,thick] (sub.south) .. controls (8,-1.9) and (5,-1.9) .. node[below]{SUBSCRIBE topic} (br.south);
+\end{tikzpicture}\caption{Request/response (trên) và publish/subscribe qua broker (dưới).}
+\end{figure}
+\subsection{HTTP: Hypertext Transfer Protocol}
+HTTP là giao thức ứng dụng phổ biến cho web và REST API; giao tiếp theo yêu cầu/đáp ứng, có khả năng thương lượng định dạng nội dung và về bản chất \term{stateless} (mỗi yêu cầu độc lập ở cấp giao thức). Các phương thức điển hình gồm GET (đọc), POST (gửi/tạo hoặc xử lý), PUT (tạo/thay thế), PATCH (cập nhật từng phần), DELETE (xóa). Cần phân biệt tính \emph{idempotent}: GET, PUT, DELETE được định nghĩa có tính chất này, còn POST thông thường không. HTTP có thể dùng kết nối tồn tại lâu, streaming, HTTP/2 hoặc HTTP/3 tùy hạ tầng; vì vậy phát biểu ở slide rằng HTTP luôn chỉ là giao tiếp ``một chiều'' và không thể mở rộng là cách đơn giản hóa.\srcslide{60--64}
+\begin{verbatim}
+GET /api/sensors/thermometer-01 HTTP/1.1
+Host: example.com
+Accept: application/json
+
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{"id":"thermometer-01","temperature_c":28.4}
+\end{verbatim}
+\term{Khi dùng HTTP:} dashboard, cấu hình thiết bị, API quản trị và tích hợp dịch vụ. Thiết bị chạy pin muốn truyền đều đặn mỗi vài giây qua kết nối di động có thể phải trả overhead lớn hơn so với MQTT/CoAP trong một số trường hợp. TLS tạo HTTPS để bảo mật dữ liệu trong vận chuyển.
+\subsection{TCP so với UDP}
+\term{TCP} hướng kết nối, truyền chuỗi byte theo thứ tự, phát hiện mất/nhận lại gói và điều khiển luồng/tắc nghẽn. \term{UDP} không thiết lập kết nối tại tầng vận chuyển và không bảo đảm giao nhận/thứ tự; ứng dụng có thể tự bổ sung ACK, timeout, retransmission. UDP có header cơ bản 8 byte; TCP có header tối thiểu 20 byte (không kể IP, tùy chọn và mã hóa). Không nên khẳng định ``UDP luôn nhanh hơn TCP'' trong mọi bài toán: độ tin cậy và chi phí toàn hệ thống quyết định hiệu quả.\srcslide{64--65}
+\begin{table}[htbp]\centering\small\caption{TCP và UDP đối với giao thức ứng dụng IoT}
+\begin{tabularx}{\textwidth}{@{}p{32mm}X X@{}}\toprule
+Thuộc tính & TCP & UDP\\\midrule
+Kết nối & Có & Không\\
+Đảm bảo truyền tải & Có truyền lại và thứ tự byte & Không ở tầng UDP\\
+Header tối thiểu & 20 byte & 8 byte\\
+Ví dụ & HTTP/1.1, MQTT, WebSocket & CoAP mặc định\\
+Bảo mật thường gặp & TLS & DTLS\\\bottomrule
+\end{tabularx}
+\end{table}
+\subsection{CoAP: Constrained Application Protocol}
+CoAP được thiết kế cho thiết bị và mạng hạn chế tài nguyên; theo mô hình REST gần HTTP với \texttt{GET}, \texttt{POST}, \texttt{PUT}, \texttt{DELETE}, URI, content format, proxy và cache. CoAP thường chạy trên UDP; phiên bản tiêu chuẩn còn có khả năng hoạt động qua TCP và WebSocket trong các quy định mở rộng. Trong trường hợp CoAP/UDP, bản tin có bốn loại: \term{CON} (confirmable, yêu cầu xác nhận), \term{NON} (non-confirmable), \term{ACK} (xác nhận) và \term{RST} (reset). Định danh bản tin 16-bit giúp nhận diện trùng lặp trong ngữ cảnh áp dụng; token gắn phản hồi với yêu cầu.\srcslide{65--70}
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[>=Latex,font=\footnotesize]
+\node (a) at (0,0) {Client};\node (b) at (8,0) {Server};
+\draw[dashed] (0,-.3)--(0,-3);\draw[dashed] (8,-.3)--(8,-3);
+\draw[->,thick,blue] (0,-.8)--node[above]{CON GET, MID=100, Token=AA}(8,-1.25);
+\draw[<-,thick,accent] (0,-2.2)--node[above]{ACK 2.05 Content, MID=100}(8,-1.75);
+\end{tikzpicture}\caption{Ví dụ bản tin CoAP confirmable với phản hồi gộp trong ACK.}
+\end{figure}
+\begin{keybox}CoAP truyền trên UDP không có bảo đảm mặc định ở tầng vận chuyển, nhưng \textbf{CON + ACK + cơ chế retransmission ở tầng CoAP} cung cấp độ tin cậy ở cấp trao đổi thông điệp. Không nên kết luận ``CoAP không có ACK'' chỉ từ việc dùng UDP.\end{keybox}
+\subsection{MQTT: Message Queuing Telemetry Transport}
+MQTT là giao thức nhắn tin nhẹ theo publish/subscribe, ứng dụng nhiều với telemetry và M2M. Các thành phần: \term{publisher}, \term{subscriber}, \term{broker}, \term{topic}, \term{payload}. Client thường tạo phiên TCP với broker; kết nối có thể được bảo vệ bằng TLS. Ví dụ cảm biến xuất bản lên \texttt{factory/line1/temperature}, dashboard đăng ký \texttt{factory/+/temperature}; ký tự \texttt{+} là wildcard một tầng, \texttt{\#} là wildcard nhiều tầng ở vị trí hợp lệ trong topic filter.\srcslide{71--75}
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[font=\footnotesize,>=Latex,node distance=21mm]
+\node[draw,rounded corners,fill=pale] (sensor) {Cảm biến};
+\node[draw,rounded corners,fill=blue!20,right=of sensor] (broker) {MQTT Broker};
+\node[draw,rounded corners,fill=pale,above right=9mm and 23mm of broker] (d1) {Dashboard};
+\node[draw,rounded corners,fill=pale,below right=9mm and 23mm of broker] (d2) {Dịch vụ lưu CSDL};
+\draw[->,thick,blue] (sensor)--node[above]{PUBLISH}(broker);
+\draw[->,thick,blue] (broker)--node[above,sloped]{PUBLISH}(d1);
+\draw[->,thick,blue] (broker)--node[below,sloped]{PUBLISH}(d2);
+\draw[->,dashed] (d1.west) to[bend right=35] node[below]{SUBSCRIBE} (broker.north);
+\end{tikzpicture}\caption{MQTT broker phân phối dữ liệu theo topic đến nhiều subscriber.}
+\end{figure}
+\subsubsection{Bốn giai đoạn và thông điệp}
+Slide tóm tắt một phiên giao tiếp thành \emph{connection}, \emph{authentication}, \emph{communication}, \emph{termination}. Ở cấp giao thức, có các gói như CONNECT/CONNACK, PUBLISH, SUBSCRIBE/SUBACK, PINGREQ/PINGRESP, DISCONNECT. Tên giai đoạn ``authentication'' trong slide là mô tả logic: xác thực có thể là một phần của quá trình CONNECT, có cơ chế nâng cao tùy phiên bản và cấu hình broker.
+\subsubsection{Ba cấp QoS}
+\begin{itemize}
+\item \term{QoS 0 — At most once:} gửi theo mức nỗ lực tối đa, không có retransmission của MQTT cho gói publish này. Có thể mất tin.
+\item \term{QoS 1 — At least once:} dùng PUBACK; có thể phát lại, subscriber có khả năng nhận trùng. Ứng dụng nên thiết kế idempotent nếu cần.
+\item \term{QoS 2 — Exactly once:} chuỗi xác nhận nhiều bước (PUBREC/PUBREL/PUBCOMP) nhằm tránh phát MQTT PUBLISH trùng trong ngữ cảnh trao đổi giữa các bên MQTT; tăng overhead. Không đồng nghĩa bảo đảm ``mỗi tác động vật lý diễn ra đúng một lần'' ở toàn hệ thống khi mất nguồn hoặc có lỗi nghiệp vụ.
+\end{itemize}
+\begin{table}[htbp]\centering\small\caption{So sánh MQTT QoS}
+\begin{tabularx}{\textwidth}{@{}p{16mm}p{35mm}X@{}}\toprule
+QoS & Cam kết phân phối & Đánh đổi / ví dụ\\\midrule
+0 & At most once & Ít overhead; telemetry liên tục có thể chấp nhận mất một vài mẫu\\
+1 & At least once & Có thể trùng; báo trạng thái quan trọng, áp dụng ID để khử trùng\\
+2 & Exactly once ở cấp MQTT & Overhead cao; chỉ chọn khi thật cần cơ chế phân phối chặt chẽ\\\bottomrule
+\end{tabularx}
+\end{table}
+\begin{note}
+Các thuộc tính \emph{retained message}, \emph{persistent session/session expiry}, \emph{last will} và \emph{keep alive} (mở rộng kỹ thuật) đặc biệt hữu ích khi thiết bị IoT mất kết nối. QoS không thay thế cho sao lưu ở SD, hàng đợi bền vững và xác nhận nghiệp vụ của ứng dụng.
+\end{note}
+\subsection{WebSocket}
+WebSocket mở kết nối hai chiều liên tục (full-duplex), thường bắt đầu bằng HTTP Upgrade trên HTTP/1.1, dùng TCP và có thể được mã hóa bằng TLS (\texttt{wss://}). Phù hợp dashboard thời gian thực, điều khiển trình duyệt và ứng dụng web tương tác. Không phải bản thân WebSocket được tối ưu năng lượng cho MCU chạy pin; cấu hình heartbeat, duy trì kết nối và dữ liệu gửi ảnh hưởng đáng kể. WebSocket khác HTTP request/response nhưng không phải ``HTTP nhanh hơn'' hay ``WebSocket luôn nặng'' trong mọi ngữ cảnh.\srcslide{76--77}
+\subsection{AMQP và XMPP}
+\term{AMQP (Advanced Message Queuing Protocol)} là giao thức nhắn tin hướng trung gian có cơ chế quản lý hàng đợi và định tuyến thông điệp. Trong mô hình AMQP 0-9-1 phổ biến, \emph{exchange} nhận và định tuyến đến \emph{queue} theo binding/routing key; \emph{consumer} lấy thông điệp từ queue. Chi tiết ``exactly once'' phụ thuộc đặc tả, broker và cơ chế xử lý ở ứng dụng, không nên coi là bảo đảm mặc định của AMQP. Bảo mật thường triển khai TLS và cơ chế xác thực phù hợp.\srcslide{78}
+\term{XMPP (Extensible Messaging and Presence Protocol)} là giao thức liên lạc dùng XML, hỗ trợ định danh, phiên và trao đổi thông điệp qua máy chủ; dùng TCP theo triển khai phổ biến. Khả năng pub/sub được bổ sung qua các XMPP Extension Protocols, không phải mọi triển khai đều tự có. XMPP phù hợp các tình huống cần hiện diện và nhắn tin phân tán, nhưng XML có overhead đối với nút tài nguyên hạn chế.\srcslide{79}
+\begin{table}[htbp]\centering\scriptsize\caption{Tổng hợp giao thức ứng dụng được giảng dạy}
+\begin{tabularx}{\textwidth}{@{}p{19mm}p{26mm}p{22mm}X@{}}\toprule
+Giao thức & Mô hình & Nền vận chuyển phổ biến & Điểm nổi bật\\\midrule
+HTTP & Request/response & TCP/TLS; HTTP/3 qua QUIC & REST, web API, quản trị\\
+CoAP & REST request/response & UDP/DTLS & Overhead thấp, CON/ACK\\
+MQTT & Publish/subscribe & TCP/TLS & Broker, topic, QoS 0/1/2\\
+WebSocket & Hai chiều liên tục & TCP/TLS & Realtime browser/server\\
+AMQP & Message queue/pub-sub & TCP/TLS & Queue, exchange, routing\\
+XMPP & Messaging, các mở rộng pub-sub & TCP/TLS & XML, presence, federation\\\bottomrule
+\end{tabularx}
+\end{table}

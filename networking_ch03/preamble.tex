@@ -1,0 +1,33 @@
+\documentclass[11pt,a4paper,oneside]{book}
+\usepackage{fontspec}
+\setmainfont{Noto Serif}
+\setlength{\emergencystretch}{2em}
+\setsansfont{DejaVu Sans}
+\setmonofont{DejaVu Sans Mono}
+\usepackage[vietnamese]{babel}
+\usepackage{geometry}
+\geometry{left=25mm,right=23mm,top=24mm,bottom=24mm}
+\usepackage{amsmath,amssymb,booktabs,array,tabularx,longtable,multirow}
+\usepackage{xcolor}
+\definecolor{navy}{HTML}{17324F}
+\definecolor{blue}{HTML}{087C9D}
+\definecolor{accent}{HTML}{D78A30}
+\definecolor{pale}{HTML}{EAF4F7}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,calc,backgrounds}
+\usepackage[most]{tcolorbox}
+\tcbset{colback=pale,colframe=blue,arc=2mm,boxrule=.5pt,left=2mm,right=2mm,top=1.5mm,bottom=1.5mm}
+\newtcolorbox{keybox}[1][]{title={Điểm cần ghi nhớ},fonttitle=\bfseries,#1}
+\newtcolorbox{note}[1][]{colback=orange!4,colframe=accent,title={Lưu ý kỹ thuật},fonttitle=\bfseries,#1}
+\usepackage{fancyhdr}
+\pagestyle{fancy}\fancyhf{}\fancyhead[L]{\small\sffamily CƠ SỞ VÀ THIẾT KẾ HỆ THỐNG IoT}\fancyhead[R]{\small\sffamily ÔN TẬP GIỮA KỲ}\fancyfoot[C]{\thepage}\renewcommand{\headrulewidth}{0.3pt}
+\usepackage{titlesec}
+\titleformat{\chapter}{\sffamily\bfseries\Huge\color{navy}}{CHƯƠNG \thechapter}{1em}{}
+\titleformat{\section}{\sffamily\bfseries\Large\color{blue}}{\thesection}{.8em}{}
+\titleformat{\subsection}{\sffamily\bfseries\normalsize\color{navy}}{\thesubsection}{.8em}{}
+\usepackage{enumitem}\setlist[itemize]{topsep=3pt,itemsep=2pt,leftmargin=6mm}
+\usepackage{hyperref}\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,bookmarksnumbered=true,pdftitle={Tổng hợp kiến thức IoT - Chương 3},pdfauthor={Tài liệu học tập biên soạn}}
+\usepackage{caption}\captionsetup{font=small,labelfont=bf}
+\newcommand{\term}[1]{\textbf{#1}}
+\newcommand{\srcslide}[1]{\par\smallskip{\footnotesize\itshape\color{gray}Đối chiếu slide bài giảng: trang #1.}\par}
+\newcommand{\diagramnode}[2]{\node[draw=navy,rounded corners=2pt,fill=pale,minimum height=9mm,minimum width=21mm,align=center] (#1) {#2};}

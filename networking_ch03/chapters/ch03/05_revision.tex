@@ -1,0 +1,74 @@
+\section{Áp dụng vào thiết kế mạng IoT}
+\subsection{Bài toán 1: cảm biến nhà thông minh}
+Hệ thống gồm hàng chục cảm biến cửa/nhiệt độ, đặt trong một căn nhà, chạy pin, gửi vài byte mỗi phút. Lựa chọn có cơ sở là Zigbee mesh hoặc BLE đến gateway, tùy thiết bị và yêu cầu; phần gateway dùng Ethernet/Wi-Fi đến MQTT broker hoặc dịch vụ quản lý. Không chọn Wi-Fi trực tiếp theo mặc định nếu thời lượng pin là ưu tiên; không cần dùng 5G hay UWB nếu không có yêu cầu di động/định vị.
+\subsection{Bài toán 2: giám sát nông nghiệp diện rộng}
+Nếu có hạ tầng LoRaWAN hợp lệ tại khu vực, các nút đo ẩm đất gửi vài bản tin mỗi giờ tới gateway là một phương án. Nếu thiếu gateway nhưng có phủ sóng NB-IoT, có thể dùng modem tế bào kèm SIM. Cần xem xét dung lượng payload, chu kỳ nhận downlink, nguồn cấp và chi phí dài hạn. Đối với dữ liệu cần bảo đảm, lưu đệm mẫu cục bộ và đánh số thứ tự.
+\subsection{Bài toán 3: thiết bị đeo giám sát và báo nguy}
+Thiết bị đeo thu IMU, truyền trạng thái quan trọng theo chu kỳ đến gateway ở gần; lớp giao tiếp có thể là BLE hoặc RF phù hợp và lớp ứng dụng sử dụng MQTT qua gateway. Mất kết nối cần có cơ chế lưu bộ nhớ, gửi lại, thông báo trạng thái liên kết. QoS 1 cần idempotency để không xử lý một cảnh báo lặp thành nhiều sự kiện. Cảnh báo an toàn tính mạng cần thiết kế dự phòng và kiểm chứng thực nghiệm; một giao thức không thể tự đảm bảo an toàn hệ thống.
+\section{Công thức và thuật ngữ trọng tâm}
+\begin{align}
+N_{\mathrm{IPv4}}&=2^{32}\approx4.29\times 10^{9}\\
+N_{\mathrm{IPv6}}&=2^{128}\approx3.40\times10^{38}\\
+R_{\mathrm{hiệu\ dụng}}&=\frac{\mathrm{Payload\ bits\ nhận\ đúng}}{\mathrm{Thời\ gian\ quan\ sát}}\\
+\mathrm{PDR}&=\frac{\mathrm{Số\ gói\ hợp\ lệ\ đến\ đích}}{\mathrm{Số\ gói\ phát}}\\
+I_{\mathrm{avg}}&=\frac{1}{T}\int_0^T I(t)\,dt.
+\end{align}
+\noindent Các đại lượng nên được đo trong điều kiện thử nghiệm xác định; tốc độ dữ liệu danh nghĩa (PHY bit rate) không phải dữ liệu hữu ích tại ứng dụng.
+\begin{longtable}{@{}p{32mm}p{103mm}@{}}
+\caption{Bảng thuật ngữ viết tắt cần nhớ}\\\toprule
+Thuật ngữ & Ý nghĩa\\\midrule\endfirsthead
+\toprule Thuật ngữ & Ý nghĩa\\\midrule\endhead
+IoT & Internet of Things — Internet vạn vật\\
+M2M/H2M/M2H/H2H & Máy--máy / người--máy / máy--người / người--người\\
+PAN/LAN & Personal/Local Area Network\\
+LPWAN & Low-Power Wide-Area Network\\
+IPv4/IPv6 & Internet Protocol phiên bản 4 / 6\\
+NFC/UWB & Near-Field Communication / Ultra-Wideband\\
+BLE & Bluetooth Low Energy\\
+PLC & Power-Line Communication\\
+RPL & Routing Protocol for Low-Power and Lossy Networks\\
+DODAG & Destination-Oriented Directed Acyclic Graph\\
+TLS/DTLS & Transport Layer Security / Datagram TLS\\
+CoAP & Constrained Application Protocol\\
+MQTT & Message Queuing Telemetry Transport\\
+QoS & Quality of Service\\
+AMQP & Advanced Message Queuing Protocol\\
+XMPP & Extensible Messaging and Presence Protocol\\
+CON/NON/ACK/RST & Các loại bản tin CoAP: confirmable / nonconfirmable / acknowledgment / reset\\
+\bottomrule
+\end{longtable}
+\section{Câu hỏi tự kiểm tra và đáp án ngắn}
+\begin{enumerate}[leftmargin=7mm,itemsep=7pt]
+\item \textbf{Hỏi:} M2M khác M2H ở điểm nào? \textbf{Đáp:} M2M truyền thông tin giữa các máy; M2H là máy tạo thông báo cho người.
+\item \textbf{Hỏi:} Chênh lệch độ dài địa chỉ IPv4 và IPv6? \textbf{Đáp:} IPv4 32 bit, IPv6 128 bit, tức IPv6 dài gấp 4 lần về số bit.
+\item \textbf{Hỏi:} Vì sao địa chỉ IP không thay thế xác thực? \textbf{Đáp:} IP là địa chỉ định tuyến, không chứng minh danh tính hoặc quyền truy cập.
+\item \textbf{Hỏi:} LoRa khác LoRaWAN thế nào? \textbf{Đáp:} LoRa là lớp vật lý điều chế; LoRaWAN quy định các chức năng mạng/MAC và kiến trúc phía trên.
+\item \textbf{Hỏi:} Khi nào nên cân nhắc BLE? \textbf{Đáp:} Truyền dữ liệu ít ở phạm vi gần, yêu cầu pin lâu và có gateway/điện thoại.
+\item \textbf{Hỏi:} Zigbee có thể tạo các topology nào? \textbf{Đáp:} Star, tree, mesh (và các kiểu điểm-điểm ở tầng liên kết theo ngữ cảnh).
+\item \textbf{Hỏi:} Vì sao mesh có thể tăng phủ sóng nhưng cũng tăng tiêu thụ? \textbf{Đáp:} Gói tin đi qua router trung gian, tạo thêm lần phát và overhead định tuyến.
+\item \textbf{Hỏi:} RPL giải quyết vấn đề gì? \textbf{Đáp:} Định tuyến IPv6 trong mạng ít năng lượng và liên kết tổn hao.
+\item \textbf{Hỏi:} HTTP và MQTT khác mô hình trao đổi ra sao? \textbf{Đáp:} HTTP thông thường request/response; MQTT publish/subscribe qua broker.
+\item \textbf{Hỏi:} CoAP truyền trên UDP có thể bảo đảm ACK không? \textbf{Đáp:} Có, ở tầng CoAP bằng CON/ACK và cơ chế truyền lại.
+\item \textbf{Hỏi:} QoS 1 có thể sinh bản tin trùng? \textbf{Đáp:} Có; ít nhất một lần, vì vậy cần ID và khử trùng khi xử lý.
+\item \textbf{Hỏi:} QoS 2 có bảo đảm van nước chỉ mở đúng một lần trong mọi lỗi không? \textbf{Đáp:} Không; QoS 2 chỉ giải quyết ngữ nghĩa phân phối MQTT, nghiệp vụ cần bảo vệ riêng.
+\item \textbf{Hỏi:} TLS và DTLS thường dùng với loại transport nào? \textbf{Đáp:} TLS trên giao thức dạng luồng (thường TCP), DTLS trên datagram (thường UDP).
+\item \textbf{Hỏi:} Khi nào dùng WebSocket? \textbf{Đáp:} Dữ liệu hai chiều liên tục giữa browser/app với server, ví dụ dashboard thời gian thực.
+\item \textbf{Hỏi:} Chọn NB-IoT hay Wi-Fi cho công tơ nơi xa? \textbf{Đáp:} Nếu có NB-IoT với vùng phủ và ngân sách phù hợp, NB-IoT thuận tiện hơn khi không có hạ tầng Wi-Fi; luôn khảo sát thực tế.
+\end{enumerate}
+\section{Bài tập vận dụng}
+\textbf{Bài 1.} Một nút có chu kỳ 60 giây: ngủ 59.5 giây ở 0.02 mA, phát 0.5 giây ở 60 mA. Tính dòng trung bình và tuổi thọ lý thuyết khi dung lượng khả dụng là 2000 mAh.\par
+\textbf{Hướng dẫn:} \(I_{avg}=0.02\cdot59.5/60+60\cdot0.5/60\approx0.5198\,\mathrm{mA}\). Thời gian \(2000/0.5198\approx3848\) giờ, khoảng 160 ngày (không kể hiệu suất nguồn, tự xả, nhiệt độ và lão hóa).\par\medskip
+\textbf{Bài 2.} Thiết kế mạng cảm biến gồm 100 nút trong một nhà máy ba tầng, báo dữ liệu 30 giây/lần, báo động phải nhận dưới 3 giây; giải thích vì sao không thể chỉ dựa vào \emph{range} để chọn công nghệ.\par
+\textbf{Gợi ý:} Cần tính dung lượng mạng, nhiều hop, nhiễu RF, retry, số router luôn bật, phân bổ gateway, kiểm tra độ trễ tail-percentile và bảo vệ chống mất kết nối.\par\medskip
+\textbf{Bài 3.} Cảm biến nhiệt độ xuất MQTT QoS 1 lên \texttt{plant/a/temperature}. Một ứng dụng nhận trùng sau khi reconnect. Đề xuất định dạng payload và logic server.\par
+\textbf{Gợi ý:} Gắn \texttt{device\_id}, \texttt{seq}, \texttt{ts}, \texttt{value}; xử lý khóa \texttt{device\_id+seq} duy nhất trong cơ sở dữ liệu và ghi nhận last sequence.
+\section{Nguồn tham khảo và phạm vi tài liệu}
+\begin{enumerate}[leftmargin=7mm]
+\item Nguyễn Đắc Cử, \emph{Cơ sở và thiết kế hệ thống IoT — Chapter 3: Networking technologies in IoT}, slide bài giảng Đại học Phenikaa, 81 trang. \textbf{Nguồn chính} quyết định phạm vi và thứ tự chủ đề.
+\item Qusay F. Hassan (ed.), \emph{Internet of Things A to Z: Technologies and Applications}, Wiley/IEEE Press, 2018, đặc biệt phần công nghệ lớp mạng, bảo mật và trao đổi dữ liệu.
+\item Adrian McEwen và Hakim Cassimally, \emph{Designing the Internet of Things}, Wiley, 2014, chương Internet Principles và Prototyping Online Components.
+\item Alice James, Avishkar Seth và Subhas Chandra Mukhopadhyay, \emph{IoT System Design: Project Based Approach}, Springer, ISBN 978-3-030-85863-6, 2022, các chương Wi-Fi, Bluetooth, LoRa.
+\end{enumerate}
+\begin{note}
+Tài liệu là \textbf{bản tổng hợp học tập độc lập}, không phải bản chép nguyên văn slide hay sách. Các thông số trong slide là tài liệu môn học ở thời điểm biên soạn; khi làm dự án thực tế cần kiểm tra thông số thiết bị, đặc tả giao thức và quy định tần số tại nơi triển khai.
+\end{note}

@@ -1,0 +1,53 @@
+\section{Bảo mật và định tuyến trong IoT}
+\subsection{An toàn thông tin và phân tầng bảo mật}
+Trong IoT, ba thuộc tính cơ bản là \emph{confidentiality} (bí mật dữ liệu), \emph{integrity} (toàn vẹn), \emph{availability} (sẵn sàng). Cần thêm \emph{authentication} (xác thực chủ thể) và \emph{authorization} (phân quyền hành động). Mã hóa mà không kiểm tra tính xác thực và quản lý khóa đúng cách vẫn có thể bị giả mạo hoặc replay.\srcslide{42}
+\begin{description}[style=nextline]
+\item[IPsec.] Bộ cơ chế bảo vệ ở lớp IP, có thể cung cấp xác thực, bảo toàn vẹn và mã hóa theo cấu hình; sử dụng với IPv4 hoặc IPv6, không tự động bật chỉ vì dùng IPv6.
+\item[TLS.] Bảo mật phiên kết nối thường đặt trên TCP, dùng cho HTTPS, MQTT over TLS và các dịch vụ ứng dụng khác. Xác thực chứng chỉ và khóa là điều kiện quan trọng.
+\item[DTLS.] Tương tự TLS nhưng thiết kế cho datagram (thường UDP), thường được đề cập với CoAP. Ngoài ra, một số triển khai CoAP có thể dùng bảo mật đối tượng và vận chuyển bảo mật khác.
+\item[IEEE 1888.3.] Slide giới thiệu chuẩn an toàn liên quan họ IEEE 1888 cho mạng điều khiển cộng đồng xanh, nhằm hạn chế truy cập không hợp lệ và bảo vệ dữ liệu.
+\end{description}
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[font=\footnotesize,>=Latex]
+\node[draw,fill=pale,minimum width=49mm,minimum height=10mm] (a) at (0,1.5) {Ứng dụng: MQTT, HTTP};
+\node[draw,fill=pale,minimum width=49mm,minimum height=10mm] (b) at (0,.3) {TCP + TLS};
+\node[draw,fill=pale,minimum width=49mm,minimum height=10mm] (c) at (0,-.9) {IP + Wi-Fi/cellular};
+\node[draw,fill=accent!12,minimum width=49mm,minimum height=10mm] (d) at (6.3,1.5) {Ứng dụng: CoAP};
+\node[draw,fill=accent!12,minimum width=49mm,minimum height=10mm] (e) at (6.3,.3) {UDP + DTLS};
+\node[draw,fill=accent!12,minimum width=49mm,minimum height=10mm] (f) at (6.3,-.9) {IP + 802.15.4/khác};
+\draw[->] (a)--(b)--(c);\draw[->] (d)--(e)--(f);
+\end{tikzpicture}\caption{Ví dụ các ngăn xếp giao thức được bảo vệ.}
+\end{figure}
+\subsection{Định tuyến RPL (Routing Protocol for Low-Power and Lossy Networks)}
+\term{Định tuyến} chọn đường đưa gói tin từ nguồn đến đích qua một hay nhiều hop. IoT thường có nút chạy pin, liên kết không ổn định, tốc độ thấp và số nút lớn. \term{RPL} là giao thức định tuyến IPv6 hướng tới mạng năng lượng thấp và suy hao cao (LLN), phù hợp một số mạng 802.15.4. RPL tổ chức một \emph{DODAG} (Destination-Oriented Directed Acyclic Graph) hướng về root; mỗi nút tính \emph{rank} theo hàm mục tiêu, có thể dựa trên số hop, chỉ số liên kết ETX hoặc thước đo khác.\srcslide{43--45}
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[>=Latex,node distance=13mm,font=\footnotesize,every node/.style={draw,circle,fill=pale,minimum size=9mm}]
+\node[fill=accent!35] (root) at (0,2.7) {R};
+\node (a) at (-2,1.2) {A};\node (b) at (2,1.2) {B};
+\node (c) at (-3,0) {C};\node (d) at (-.8,0) {D};\node (e) at (2.6,0) {E};
+\draw[->,thick,blue] (c)--(a)--(root);\draw[->,thick,blue] (d)--(a);\draw[->,thick,blue] (e)--(b)--(root);
+\draw[densely dashed] (d)--(b);
+\node[draw=none,rectangle] at (4.0,2.7) {R = Root/Gateway};
+\node[draw=none,rectangle] at (4.0,2.1) {Mũi tên: hướng uplink};
+\end{tikzpicture}\caption{DODAG minh họa trong RPL; liên kết nét đứt là tuyến thay thế có thể cân nhắc.}
+\end{figure}
+\begin{keybox}Không đồng nhất \textbf{routing protocol} với \textbf{network topology}: mesh mô tả các liên kết có thể có, còn RPL quyết định con đường chuyển gói trên một mạng tương ứng.\end{keybox}
+\section{Bốn loại mạng IoT (Types of IoT Network)}
+Bài giảng phân nhóm phổ biến theo vùng phủ và tổ chức kết nối thành \term{Cellular}, \term{LAN/PAN}, \term{LPWAN} và \term{Mesh}. Đây là một cách phân loại thực dụng, \emph{không loại trừ lẫn nhau}: mesh là topology, LPWAN là lớp đặc trưng về năng lượng và diện phủ; mạng có thể đồng thời là mạng mesh thuộc PAN.\srcslide{46--54}
+\subsection{Cellular networks}
+Dùng hạ tầng di động và các trạm gốc của nhà mạng. Ưu điểm: vùng phủ diện rộng, hỗ trợ thiết bị di chuyển, quản lý thuê bao/hạ tầng sẵn có. Nhược điểm: có thể mất sóng tại tầng hầm, hầm mỏ, tủ điện kín; chi phí kết nối; đỉnh dòng phát và nhu cầu quản lý năng lượng. LTE-M và NB-IoT là hai lựa chọn Cellular IoT được nêu trong bài giảng.\srcslide{47--49}
+\subsection{Local Area Network và Personal Area Network}
+\term{LAN} kết nối các thiết bị trong phạm vi địa điểm như phòng học, văn phòng, xưởng hoặc hộ gia đình; ví dụ Ethernet/Wi-Fi. \term{PAN} nhấn mạnh phạm vi quanh cá nhân; BLE là ví dụ thường gặp. LAN/PAN có ưu điểm dễ triển khai và chi phí tương đối thấp nếu đã có hạ tầng; nhưng vùng phủ không rộng và chịu tác động nhiễu, vật chắn, tải mạng. Không thể mặc định tất cả LAN/PAN ``không tin cậy'': chất lượng tùy chuẩn và thiết kế hệ thống.\srcslide{50--51}
+\subsection{LPWAN}
+Mạng \term{Low-Power Wide-Area Network} nhắm tới cảm biến công suất thấp trao đổi payload nhỏ trên khoảng cách lớn; đánh đổi bằng tốc độ hạn chế, độ trễ có thể cao và giới hạn số lần truyền. LoRaWAN, Sigfox, LTE-M và NB-IoT là những công nghệ có thể xếp vào nhóm LPWAN, dù khác nhau về hạ tầng và giao thức.\srcslide{52}
+\subsection{Mesh networks}
+Trong mesh, các router/node có thể chuyển tiếp gói qua nhiều chặng, mở rộng vùng phủ ngoài liên kết trực tiếp tới gateway. Ưu điểm: đường đi linh hoạt và có thể phục hồi khi một tuyến yếu. Nhược điểm: số hop làm tăng độ trễ, overhead định tuyến và số lần phát vô tuyến; router trung gian chạy pin có thể nhanh hết năng lượng. Không phải mọi thiết bị đầu cuối đều làm nhiệm vụ chuyển tiếp.\srcslide{53--54}
+\begin{table}[htbp]\centering\small\caption{So sánh khái quát bốn nhóm mạng trong slide}
+\begin{tabularx}{\textwidth}{@{}p{23mm}X X@{}}\toprule
+Nhóm & Ưu điểm tiêu biểu & Hạn chế cần xét\\\midrule
+Cellular & Rộng, có thể hỗ trợ di động & Phụ thuộc phủ sóng, SIM, chi phí và dòng đỉnh\\
+LAN/PAN & Hạ tầng phổ biến, dễ tích hợp & Vùng phủ và nhiễu nội bộ\\
+LPWAN & Xa, pin lâu nếu gửi thưa & Payload và thông lượng hạn chế\\
+Mesh & Nhiều đường, mở rộng bằng hop & Routing overhead, độ trễ và router trung gian\\\bottomrule
+\end{tabularx}
+\end{table}
