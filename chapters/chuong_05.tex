@@ -1,0 +1,141 @@
+\chapter{Cơ cấu chấp hành (Actuators)}
+\label{chap:act}
+
+\section{Mục tiêu và khái niệm}
+Sau chương này, người học cần mô tả được vai trò cơ cấu chấp hành trong IoT; phân biệt cảm biến/đầu vào với đầu ra vật lý; chọn sơ bộ phần tử chấp hành; hiểu nguyên lý GPIO, PWM và mạch driver; biết các ràng buộc nguồn, bảo vệ và an toàn khi ghép MCU với tải.
+
+Theo slide, \hwterm{cơ cấu chấp hành}{actuator} là thiết bị nhận tín hiệu điều khiển (thường là điện) và tạo ra chuyển động cơ học hoặc một thay đổi vật lý như ánh sáng, âm thanh, nhiệt độ, áp lực, trạng thái đóng mở. Các ví dụ minh họa bao gồm động cơ điện, động cơ bước, LED, LCD, ma trận LED, còi/buzzer. Trong ngôn ngữ hẹp, ``actuator'' có thể chỉ cơ cấu tạo chuyển động; ở phạm vi bài giảng IoT, từ này được dùng rộng hơn để chỉ \emph{thiết bị đầu ra tác động lên môi trường hoặc người sử dụng}.
+\sourcepages{13--15}
+
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[font=\small\sffamily,node distance=9mm]
+\node[block] (env) {Đối tượng /\\môi trường thực};
+\node[block,above right=6mm and 12mm of env] (sen) {Cảm biến\\đo trạng thái};
+\node[block,right=18mm of sen] (ctrl) {Bộ điều khiển\\luật / thuật toán};
+\node[block,below=15mm of ctrl] (act) {Driver + actuator\\lực / chuyển động / nhiệt};
+\draw[arrow] (env.north) |- (sen.west);
+\draw[arrow] (sen)--(ctrl);
+\draw[arrow] (ctrl)--(act);
+\draw[arrow] (act.west)-|(env.south);
+\node[below=7mm of env,align=center,font=\scriptsize]{Vòng kín: đầu ra thực tế\\được đo rồi hiệu chỉnh};
+\end{tikzpicture}
+\caption{Vòng điều khiển phản hồi: cảm biến là đường đo; actuator là đường tác động.}
+\end{figure}
+
+\section{So sánh cảm biến và cơ cấu chấp hành}
+\begin{table}[htbp]\centering\small
+\caption{Hai vai trò trong hệ IoT, tổng hợp từ slide 14}
+\begin{tabularx}{\textwidth}{p{34mm}XX}
+\toprule
+Thuộc tính & Cảm biến (sensor) & Chấp hành (actuator)\\\midrule
+Vai trò & Đọc hoặc cảm nhận thế giới thực & Tác động vào thế giới thực\\
+Hướng dữ liệu & Vật lý $\to$ tín hiệu $\to$ MCU & MCU $\to$ lệnh / driver $\to$ thay đổi vật lý\\
+Vị trí chức năng & Nhánh đầu vào hệ điều khiển & Nhánh đầu ra hệ điều khiển\\
+Ví dụ & Nhiệt kế, micro, IMU, từ kế & Quạt, LED, loa, van điện từ, servo\\
+Sai lầm hay gặp & Nhầm mức logic sensor là tải & Nối động cơ trực tiếp với chân GPIO\\\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Nhóm phần tử chấp hành thường gặp}
+\subsection{LED, màn hình và còi báo}
+LED biến điện năng thành ánh sáng, phù hợp báo trạng thái. LED đơn cần điện trở hạn dòng $R\approx (V_{CC}-V_F)/I$ khi điện áp cấp lớn hơn điện áp thuận $V_F$ và phù hợp với khả năng dòng chân MCU. Chẳng hạn với $V_{CC}=3.3$ V, $V_F=2.0$ V, mục tiêu $I=5$ mA: $R\approx260\,\Omega$, có thể chọn điện trở chuẩn gần đó và tính lại dòng. Màn hình LCD, ma trận LED cần nhiều tín hiệu dữ liệu và mạch driver; buzzer có loại \emph{active} tự tạo âm khi cấp điện và \emph{passive} cần tín hiệu dao động. Tên ``active/passive'' của buzzer không đồng nghĩa cách phân loại cảm biến.
+
+\subsection{Động cơ DC, động cơ bước và servo}
+\textbf{Động cơ DC:} tốc độ xấp xỉ điều khiển qua điện áp hiệu dụng/PWM; chiều quay có thể đảo bằng cầu H. Dòng khởi động/khóa trục có thể lớn hơn nhiều so với dòng chạy không tải, do đó cần driver và nguồn được tính theo tải thực.
+
+\textbf{Động cơ bước (stepper):} quay theo từng bước rời rạc khi driver được cấp chuỗi xung pha. Với động cơ có góc bước $\theta_{step}$, nếu điều khiển bước đầy đủ và không bị mất bước: $N_{rev}=360^\circ/\theta_{step}$. Ví dụ động cơ $1.8^\circ$/bước cần $200$ bước/vòng. Vi bước (microstepping) tăng số vi bước lệnh trên một vòng nhưng không bảo đảm độ chính xác cơ khí tương ứng. Slide sử dụng stepper để minh họa điều khiển vị trí trong cánh tay robot.
+
+\textbf{Servo RC:} thường có bộ điều khiển bên trong, nhận xung điều khiển theo chu kỳ; góc, dải xung và tốc độ tùy servo. Cần nguồn đủ dòng, GND chung và không mặc định rằng mọi servo hỗ trợ cùng phạm vi góc.
+\sourcepages{13}
+
+\subsection{Rơ-le, van điện từ, tải nhiệt và cơ cấu tuyến tính}
+Rơ-le dùng cuộn hút để thay đổi trạng thái tiếp điểm và cách ly chức năng điều khiển khỏi tải, nhưng phải đáp ứng định mức điện áp/dòng, khoảng cách điện và chuẩn an toàn. Van điện từ dùng từ trường điều khiển dòng lưu chất; động cơ tuyến tính/solenoid dùng lực điện từ để kéo hoặc đẩy. Dây đốt nóng và module Peltier biến điện thành nhiệt/lạnh tương đối; cần cảm biến phản hồi, bảo vệ quá nhiệt và nguồn công suất phù hợp.
+
+\section{Nguyên lý ghép mạch điều khiển công suất}
+\subsection{Vì sao GPIO không cấp trực tiếp được tải lớn?}
+GPIO xuất mức logic và dòng giới hạn bởi datasheet MCU; mô-tơ, van, rơ-le tiêu thụ dòng lớn và có thể phát xung quá áp khi ngắt. Mạch driver (MOSFET, BJT, cầu H, IC chuyên dụng) chuyển tín hiệu mức thấp thành chuyển mạch tải. Với tải cuộn cảm DC, diode \emph{flyback} mắc ngược chiều dẫn bình thường tạo đường cho dòng cảm khi ngắt. Tải AC/công suất lớn cần mạch và biện pháp an toàn riêng, không sử dụng sơ đồ DC đơn giản một cách máy móc.
+
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[font=\small\sffamily,>=Latex]
+\node[block] (cpu) at (0,0) {MCU\\GPIO/PWM};
+\node[block] (drv) at (4.1,0) {MOSFET / Driver\\điều khiển dòng};
+\node[block] (mot) at (8.2,0) {Động cơ / van\\nguồn tải riêng};
+\draw[arrow](cpu)--(drv);\draw[arrow](drv)--(mot);
+\node[block,fill=paleteal] (supply) at (8.2,-1.7) {Nguồn tải\\đủ dòng đỉnh};
+\draw[arrow](supply)--(mot);
+\draw[thick,dashed,tealiot] (0,-.7)--(0,-2.5)--(8.2,-2.5)--(8.2,-2.4);
+\node[font=\footnotesize,fill=white,text=tealiot] at (4.2,-2.5){GND chung khi phù hợp kiến trúc};
+\end{tikzpicture}
+\caption{Phân tách tín hiệu điều khiển và đường công suất.}
+\end{figure}
+
+\subsection{PWM: điều chỉnh công suất trung bình}
+\hwterm{PWM}{pulse-width modulation} đóng/ngắt tải theo chu kỳ $T$ với thời gian ON là $t_{on}$; hệ số lấp đầy:
+\begin{equation}\boxed{D=\frac{t_{on}}{T}},\qquad 0\le D\le1,\qquad f_{PWM}=\frac1T.\end{equation}
+Với tải có tính quán tính/lọc đủ lớn, công suất hoặc điện áp \emph{trung bình} có thể phụ thuộc $D$. Ví dụ PWM mức cao 3.3 V, $D=0.40$ cho điện áp trung bình lý tưởng khoảng $1.32$ V \emph{tại tín hiệu PWM}, nhưng không nên coi đó là điện áp DC sạch và không suy ra ngay mô-men động cơ. Tần số PWM chọn theo driver, tiếng ồn, hiệu suất và yêu cầu điều khiển.
+
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[font=\small\sffamily,>=Latex,x=1cm,y=1cm]
+\draw[->](0,0)--(10.2,0) node[right]{Thời gian};\draw[->](0,-.15)--(0,1.8) node[above]{Mức};
+\draw[ultra thick,tealiot] (0,0)--(.2,0)--(.2,1.5)--(1,1.5)--(1,0)--(2.2,0)--(2.2,1.5)--(3,1.5)--(3,0)--(4.2,0)--(4.2,1.5)--(5,1.5)--(5,0)--(6.2,0)--(6.2,1.5)--(7,1.5)--(7,0)--(8.2,0)--(8.2,1.5)--(9,1.5)--(9,0);
+\draw[dashed,orangeiot,thick] (.2,-.3)--(.2,1.85);\draw[dashed,orangeiot,thick](2.2,-.3)--(2.2,1.85);
+\draw[<->,orangeiot] (.2,1.8)--(2.2,1.8) node[midway,above]{$T$};
+\draw[<->,blueiot] (.2,1.15)--(1,1.15) node[midway,above]{$t_{on}$};
+\node[font=\footnotesize] at (7.4,1.9){Minh họa $D=0.4$};
+\end{tikzpicture}
+\caption{Xung PWM 40\% duty cycle (sơ đồ lý tưởng).}
+\end{figure}
+
+\section{Đặc tính kỹ thuật khi chọn actuator}
+\begin{longtable}{p{30mm}p{60mm}p{55mm}}
+\caption{Bảng kiểm tham số thiết kế}\label{tab:actreq}\\
+\toprule
+Tham số & Câu hỏi cần trả lời & Rủi ro nếu bỏ qua\\\midrule\endfirsthead
+\toprule Tham số & Câu hỏi cần trả lời & Rủi ro nếu bỏ qua\\\midrule\endhead
+Công suất / dòng & Điện áp danh định? Dòng chạy, dòng đỉnh, dòng khởi động? & Sụt áp, reset MCU, quá nhiệt\\
+Driver & Cần MOSFET, relay, cầu H, IC điều khiển bước? & Hỏng GPIO, không đảo chiều được\\
+Tốc độ / vị trí & Tốc độ, hành trình, mô-men và độ chính xác cần bao nhiêu? & Mất bước, quá tải cơ khí\\
+Điều khiển & On/off, PWM, xung bước, UART, I\textsuperscript{2}C? & Không tương thích MCU/driver\\
+Phản hồi & Có encoder, công tắc hành trình, cảm biến dòng? & Không phát hiện kẹt tải\\
+Điện từ / EMC & Tải cảm có diode dập xung, tụ, snubber phù hợp? & Reset, nhiễu sensor/RF\\
+An toàn & Khi lỗi mất mạng hoặc MCU treo, tải về trạng thái nào? & Tải hoạt động không kiểm soát\\
+Cơ khí & Giới hạn nhiệt, lắp gá, rung, chống nước? & Mòn, hỏng, mất ổn định\\\bottomrule
+\end{longtable}
+
+\section{Điều khiển vòng hở và vòng kín}
+\hwterm{Vòng hở}{open-loop} phát lệnh mà không đo lại kết quả. Ví dụ cấp 100 xung bước và giả định trục quay đúng 100 bước; mô hình đơn giản, chi phí thấp nhưng có thể sai lệch do kẹt tải. \hwterm{Vòng kín}{closed-loop} thu phản hồi để tính sai lệch $e(t)=r(t)-y(t)$, sau đó điều chỉnh lệnh $u(t)$. Các thuật toán thường gặp gồm on/off có hysteresis, PID và điều khiển trạng thái.
+
+\begin{tipbox}
+\textbf{Ví dụ nhà thông minh:} đặt nhiệt độ mục tiêu, sensor đo không khí, MCU xử lý, relay/MOSFET điều khiển quạt. Với cơ cấu chấp hành động cơ, nếu cần bảo đảm tốc độ thực cần encoder hoặc cảm biến phản hồi thích hợp.
+\end{tipbox}
+
+\section{Ví dụ chương trình Arduino: LED bằng PWM}
+Đoạn mã sau minh họa sử dụng bo Arduino Uno cổ điển với một chân PWM phù hợp. Chọn điện trở hạn dòng LED theo phần cứng thực tế; \texttt{analogWrite()} tạo PWM ở nhiều bo Arduino, \emph{không} phải DAC analog thật.
+\begin{lstlisting}[language=C++,caption={Tăng/giảm độ sáng LED theo dạng tam giác}]
+const int LED_PIN = 9;
+void setup() {
+  pinMode(LED_PIN, OUTPUT);
+}
+void loop() {
+  for (int duty = 0; duty <= 255; duty += 5) {
+    analogWrite(LED_PIN, duty);
+    delay(25);
+  }
+  for (int duty = 255; duty >= 0; duty -= 5) {
+    analogWrite(LED_PIN, duty);
+    delay(25);
+  }
+}
+\end{lstlisting}
+Mã chỉ điều khiển LED công suất nhỏ trong giới hạn cho phép; muốn điều khiển bơm/van/động cơ phải thêm driver, cấp nguồn và bảo vệ.
+
+\section{Bài tập và câu hỏi ôn tập}
+\begin{enumerate}
+\item Nêu ít nhất bốn khác biệt giữa cảm biến và cơ cấu chấp hành theo luồng năng lượng, thông tin và chức năng.
+\item Tại sao động cơ bước điều khiển vị trí chính xác hơn DC motor vòng hở trong nhiều tình huống, và khi nào vẫn cần encoder?
+\item Một động cơ có góc bước $1.8^\circ$; muốn quay $90^\circ$ ở chế độ bước đầy đủ, cần bao nhiêu bước? \emph{Đáp số:} $50$ bước.
+\item PWM có $T=10\,\mathrm{ms}$ và thời gian ON $3.5\,\mathrm{ms}$. Tính duty, tần số. \emph{Đáp số:} $35\%$, $100\,\mathrm{Hz}$.
+\item Vẽ mạch khối ESP32 $\to$ driver MOSFET $\to$ bơm DC, xác định nguồn tải, GND, bảo vệ diode và tín hiệu điều khiển.
+\item Nêu cách xử lý nếu sensor mất kết nối khi actuator đang bật. Vì sao không có chính sách lỗi chung cho mọi thiết bị?
+\end{enumerate}
+\begin{notebox}\textbf{Tóm tắt cần nhớ:} Actuator tạo tác động vật lý từ tín hiệu điều khiển. GPIO và driver là hai tầng khác nhau. Cần chọn nguồn theo dòng đỉnh, thiết kế bảo vệ tải cảm, phản hồi và trạng thái an toàn. PWM là điều chế độ rộng xung; không phải điện áp analog thuần.\end{notebox}
